@@ -7,3 +7,10 @@ spring:
     username: ${MYSQL_USERNAME:"random"}
     password: ${MYSQL_PASSWORD:"password"}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /swagger-docs.html
+    operations-sorter: method

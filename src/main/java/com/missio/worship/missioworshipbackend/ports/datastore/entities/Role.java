@@ -18,4 +18,9 @@ public class Role {
     @Column(nullable = false, name = "name")
     @NonNull
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
+    private User user_id;
 }

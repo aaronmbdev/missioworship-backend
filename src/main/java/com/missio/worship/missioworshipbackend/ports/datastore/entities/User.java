@@ -23,7 +23,7 @@ public class User {
     @NonNull
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_id")
     @ToString.Exclude
     private Set<Role> roles;
 }
