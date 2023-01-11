@@ -1,6 +1,8 @@
 package com.missio.worship.missioworshipbackend.ports.api.users;
 
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
+import com.missio.worship.missioworshipbackend.ports.api.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.ports.api.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.ports.api.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.ports.api.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @Tag(name = "Controlador de Usuario", description = "Endpoints para usuario de missio")
-@RestController
-@RequestMapping("v1/user/")
 public interface UserController {
 
     @GetMapping("{$id}")
@@ -42,6 +42,16 @@ public interface UserController {
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
                                         schema = @Schema(implementation = UnauthorizedResponse.class))
                         }),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error en el formato. Verifique que la fecha tiene un formato adecuado dd/MM/YYYY y que se incluyen todos los campos.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = BadRequestResponse.class)
+                                    )
+                            }
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "El usuario solicitado no existe en el sistema",
@@ -68,6 +78,24 @@ public interface UserController {
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             }),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "El nivel de autorización no es adecuado. Solo un admin puede hacer esto.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ForbiddenResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error en el formato. Verifique que la fecha tiene un formato adecuado dd/MM/YYYY y que se incluyen todos los campos.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = BadRequestResponse.class)
+                                    )
+                            }
+                    ),
                     @ApiResponse(
                             responseCode = "404",
                             description = "El usuario a eliminar no existe en el sistema",
@@ -126,6 +154,24 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             }),
                     @ApiResponse(
+                            responseCode = "403",
+                            description = "El nivel de autorización no es adecuado. Solo un admin puede hacer esto.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ForbiddenResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error en el formato. Verifique que la fecha tiene un formato adecuado dd/MM/YYYY y que se incluyen todos los campos.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = BadRequestResponse.class)
+                                    )
+                            }
+                    ),
+                    @ApiResponse(
                             responseCode = "404",
                             description = "El usuario solicitado no existe en el sistema",
                             content = {
@@ -148,6 +194,24 @@ public interface UserController {
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = User.class))
                             }),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "El nivel de autorización no es adecuado. Solo un admin puede hacer esto.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ForbiddenResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Error en el formato. Verifique que la fecha tiene un formato adecuado dd/MM/YYYY y que se incluyen todos los campos.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = BadRequestResponse.class)
+                                    )
+                            }
+                    ),
                     @ApiResponse(
                             responseCode = "401",
                             description = "No se ha enviado el token de sesión o ha caducado",

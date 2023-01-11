@@ -9,8 +9,4 @@ public class NotFoundResponse extends HttpErrorResponse {
     public NotFoundResponse(String reason) {
         super(Instant.now(), HttpStatus.NOT_FOUND.value(), reason);
     }
-
-    public NotFoundResponse() {
-        this("");
-    }
 }
