@@ -9,8 +9,6 @@ import java.util.Set;
 @ToString
 @Getter
 @Setter
-@RequiredArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -25,7 +23,8 @@ public class User {
     @Unique
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_id")
+    @OneToMany(mappedBy = "user")
     @ToString.Exclude
-    private Set<Role> roles;
+    Set<UserRoles> roles;
+
 }

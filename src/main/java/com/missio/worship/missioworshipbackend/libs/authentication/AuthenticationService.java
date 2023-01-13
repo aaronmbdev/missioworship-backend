@@ -3,6 +3,7 @@ package com.missio.worship.missioworshipbackend.libs.authentication;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.EmailNotFound;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
+import com.missio.worship.missioworshipbackend.ports.datastore.entities.UserRoles;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRepository;
 import lombok.val;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class AuthenticationService {
                 user.getName(),
                 user.getEmail(),
                 profile,
-                user.getRoles().stream().map(Role::getName).toList()
+                user.getRoles().stream().map(entry -> entry.getRole().getName()).toList()
         );
 
     }

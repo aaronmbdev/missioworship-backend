@@ -56,9 +56,13 @@ public class AuthTokenService {
                     .build();
 
         } catch (JWTVerificationException e) {
-            log.info("El token '{}' es no ha podido validarse. Parece que no es correcto. ", token, e);
+            log.info("El token no ha podido validarse. Parece que no es correcto. ", e);
             return emptyValidationResponse;
         }
+    }
+
+    public String extractTokenFromHeader(String dirtyToken) {
+        return dirtyToken.replace("Bearer ", "");
     }
 
 }

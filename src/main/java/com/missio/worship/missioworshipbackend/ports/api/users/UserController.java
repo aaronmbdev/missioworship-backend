@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 @Tag(name = "Controlador de Usuario", description = "Endpoints para usuario de missio")
 public interface UserController {
 
-    @GetMapping("{$id}")
+    @GetMapping("{id}")
     @Operation(summary = "Obtener información de un usuario.")
     @ApiResponses(
             value = {
@@ -44,16 +44,6 @@ public interface UserController {
                                         schema = @Schema(implementation = UnauthorizedResponse.class))
                         }),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Error en el formato. Verifique que la fecha tiene un formato adecuado dd/MM/YYYY y que se incluyen todos los campos.",
-                            content = {
-                                    @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = BadRequestResponse.class)
-                                    )
-                            }
-                    ),
-                    @ApiResponse(
                         responseCode = "404",
                         description = "El usuario solicitado no existe en el sistema",
                         content = {
@@ -62,9 +52,9 @@ public interface UserController {
                                         schema = @Schema(implementation = NotFoundResponse.class))
                         })
             })
-    Mono<ResponseEntity<User>> getUser(@PathVariable Integer id) throws UserNotFound;
+    Mono<ResponseEntity<Object>> getUser(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
-    @DeleteMapping("{$id}")
+    @DeleteMapping("{id}")
     @Operation(summary = "Eliminar un usuario. Requiere token de administrador")
     @ApiResponses(
             value = {
@@ -134,7 +124,7 @@ public interface UserController {
                                                    @RequestParam(required = false, defaultValue = "0")
                                                    Integer startAt);
 
-    @PutMapping("{$id}")
+    @PutMapping("{id}")
     @Operation(summary = "Actualizar datos de usuario")
     @ApiResponses(
             value = {
