@@ -187,7 +187,7 @@ public interface UserController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "Información obtenida correctamente",
                             content = {
                                     @Content(
