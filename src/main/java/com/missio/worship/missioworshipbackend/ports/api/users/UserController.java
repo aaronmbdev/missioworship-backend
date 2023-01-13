@@ -171,9 +171,9 @@ public interface UserController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> updateUser(@PathVariable Integer id, @RequestBody User user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> updateUser(@PathVariable Integer id, @RequestBody UserCreate user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
-    @PostMapping()
+    @PostMapping
     @Operation(summary = "Crear nuevo usuario")
     @ApiResponses(
             value = {
@@ -212,5 +212,5 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> createUser(@RequestBody User user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> createUser(@RequestBody UserCreate user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 }

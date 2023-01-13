@@ -1,7 +1,10 @@
 package com.missio.worship.missioworshipbackend.libs.users;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.AuthTokenService;
+import com.missio.worship.missioworshipbackend.libs.authentication.MissioValidationResponse;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.UserRoles;
@@ -12,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -25,12 +28,12 @@ public class UserService {
 
     private final AuthTokenService authTokenService;
 
+    private final RolesService rolesService;
+
+    private static final String ADMIN_ROLE = "Two";
+
     public UserFullResponse getUser(final Integer id, final String token) throws UserNotFound, InvalidProvidedToken {
-        val cleanToken = authTokenService.extractTokenFromHeader(token);
-        val tokenVerification = authTokenService.verifyTokenValidity(cleanToken, new Date().toInstant());
-        if(!tokenVerification.isValid()) {
-            throw new InvalidProvidedToken();
-        }
+        verifyTokenValidity(token);
         val dbresponse = userRepository.findById(id).orElseThrow(() -> new UserNotFound("El usuario con id '" + id + "' no existe"));
         val roleList = userRolesRepository.findUserRolesByUserId(id);
         log.info("Encontrado usuario {} con roles {}", dbresponse, roleList);
@@ -40,5 +43,46 @@ public class UserService {
                 .email(dbresponse.getEmail())
                 .roles(roleList.stream().map(entry -> Pair.of(entry.getId(), entry.getRole().getName())).toList())
                 .build();
+    }
+
+    public UserFullResponse createUser(final String name, final String email, final List<Integer> roles, final String token) throws InvalidProvidedToken, NotAdminException, InvalidRolException {
+        val isAdmin = verifyTokenAndAdmin(token);
+        if(!isAdmin) throw new NotAdminException("El usuario no tiene permisos para realizar esta acción");
+        val validRoles = rolesService.validateListOfRoles(roles);
+
+        var user = new User();
+        user.setEmail(email);
+        user.setName(name);
+        val saved = userRepository.saveAndFlush(user);
+
+        val userRoles = validRoles.stream()
+                .map(rolId -> new UserRoles(saved, rolId))
+                .toList();
+
+        rolesService.putUserRoles(userRoles);
+
+        return UserFullResponse.builder()
+                .name(saved.getName())
+                .email(saved.getEmail())
+                .build();
+    }
+
+
+    private void verifyTokenValidity(final String token) throws InvalidProvidedToken {
+        doTokenVerification(token);
+    }
+
+    private boolean verifyTokenAndAdmin(String token) throws InvalidProvidedToken {
+        val response = doTokenVerification(token);
+        return response.getRoles().contains(ADMIN_ROLE);
+    }
+
+    private MissioValidationResponse doTokenVerification(String token) throws InvalidProvidedToken {
+        val cleanToken = authTokenService.extractTokenFromHeader(token);
+        val tokenVerification = authTokenService.verifyTokenValidity(cleanToken, new Date().toInstant());
+        if(!tokenVerification.isValid()) {
+            throw new InvalidProvidedToken();
+        }
+        return tokenVerification;
     }
 }

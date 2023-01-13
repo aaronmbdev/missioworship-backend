@@ -7,6 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_roles")
 public class UserRoles {
     @Id
@@ -20,4 +22,9 @@ public class UserRoles {
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
+
+    public UserRoles(User user, Role role) {
+        this.user = user;
+        this.role = role;
+    }
 }

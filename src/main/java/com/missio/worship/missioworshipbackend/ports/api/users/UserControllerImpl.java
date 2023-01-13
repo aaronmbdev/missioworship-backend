@@ -1,10 +1,13 @@
 package com.missio.worship.missioworshipbackend.ports.api.users;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.UserService;
+import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import lombok.AllArgsConstructor;
@@ -39,6 +42,20 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
+    public Mono<ResponseEntity<Object>> createUser(UserCreate user, String bearerToken) {
+        try {
+            val result = service.createUser(user.name(), user.email(), user.roles(), bearerToken);
+            return Mono.just(ResponseEntity.ok(result));
+        } catch (NotAdminException | InvalidProvidedToken e) {
+            val exception = new UnauthorizedResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch (InvalidRolException e) {
+            val exception = new BadRequestResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        }
+    }
+
+    @Override
     public Mono<ResponseEntity<Void>> deleteUser(Integer id, String bearerToken) {
         return null;
     }
@@ -49,12 +66,8 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Mono<ResponseEntity<Object>> updateUser(Integer id, User user, String bearerToken) {
+    public Mono<ResponseEntity<Object>> updateUser(Integer id, UserCreate user, String bearerToken) {
         return null;
     }
 
-    @Override
-    public Mono<ResponseEntity<Object>> createUser(User user, String bearerToken) {
-        return null;
-    }
 }
