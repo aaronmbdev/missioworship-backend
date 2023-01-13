@@ -5,6 +5,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
+import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -61,7 +62,7 @@ public interface UserController {
                                         schema = @Schema(implementation = NotFoundResponse.class))
                         })
             })
-    Mono<ResponseEntity<User>> getUser(@PathVariable Integer id);
+    Mono<ResponseEntity<User>> getUser(@PathVariable Integer id) throws UserNotFound;
 
     @DeleteMapping("{$id}")
     @Operation(summary = "Eliminar un usuario. Requiere token de administrador")
