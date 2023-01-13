@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: "MissioWorship"
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,3 +14,18 @@ missio:
     secret: ${CAPTCHA_SECRET:}
   jwt:
     secret: ${JWT_SECRET:}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  tracing:
+    sampling:
+      probability: 1.0
