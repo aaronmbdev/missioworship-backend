@@ -21,7 +21,4 @@ public class Role {
     @NonNull
     private String name;
 
-    @OneToMany(mappedBy = "role")
-    @ToString.Exclude
-    Set<UserRoles> users;
 }

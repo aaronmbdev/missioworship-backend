@@ -23,8 +23,4 @@ public class User {
     @Unique
     private String email;
 
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
-    Set<UserRoles> roles;
-
 }
