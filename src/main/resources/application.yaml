@@ -6,7 +6,6 @@ spring:
     url: ${MYSQL_URL:"unvalidURL"}
     username: ${MYSQL_USERNAME:"random"}
     password: ${MYSQL_PASSWORD:"password"}
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
 missio:
   captcha:
