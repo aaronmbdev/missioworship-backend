@@ -1,10 +1,10 @@
 package com.missio.worship.missioworshipbackend.ports.api.users;
 
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.BadRequestResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.ForbiddenResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.NotFoundResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.UnauthorizedResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -187,7 +187,7 @@ public interface UserController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "Información obtenida correctamente",
                             content = {
                                     @Content(

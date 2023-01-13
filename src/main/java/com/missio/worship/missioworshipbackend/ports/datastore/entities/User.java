@@ -2,6 +2,7 @@ package com.missio.worship.missioworshipbackend.ports.datastore.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.checkerframework.common.aliasing.qual.Unique;
 
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class User {
     private String name;
     @Column(nullable = false, name = "email")
     @NonNull
+    @Unique
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user_id")
