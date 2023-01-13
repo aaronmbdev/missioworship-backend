@@ -1,6 +1,5 @@
 package com.missio.worship.missioworshipbackend.libs.authentication;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import lombok.val;
 import org.junit.jupiter.api.Test;
@@ -25,15 +24,18 @@ public class GoogleTokenValidatorTest {
     @Test
     public void tokenVerificationReturnsEmailAndProfilePic() throws GeneralSecurityException, IOException {
         val randomToken = UUID.randomUUID().toString();
+        val googleResponse = GoogleIdTokenSampler.sample();
+        val email = googleResponse.getPayload().getEmail();
+        val picture = googleResponse.getPayload().getOrDefault("picture", "").toString();
 
-        /*when(verifier.verify(randomToken)).thenReturn(null);
+        when(verifier.verify(randomToken)).thenReturn(googleResponse);
         val expected = ValidationResponse.builder()
-                .email("")
-                .pictureUrl("")
-                .isValid(false)
+                .email(email)
+                .pictureUrl(picture)
+                .isValid(true)
                 .build();
         val result = customValidator.validateToken(randomToken);
-        assertThat(result).isEqualTo(expected);*/
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
