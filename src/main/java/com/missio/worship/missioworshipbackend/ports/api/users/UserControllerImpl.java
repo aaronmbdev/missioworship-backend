@@ -39,22 +39,22 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Mono<ResponseEntity<Void>> deleteUser(Integer id) {
+    public Mono<ResponseEntity<Void>> deleteUser(Integer id, String bearerToken) {
         return null;
     }
 
     @Override
-    public Mono<RestPaginationResponse<User>> getAllUsers(Integer startAt) {
+    public Mono<RestPaginationResponse<Object>> getAllUsers(Integer startAt, String bearerToken) {
         return null;
     }
 
     @Override
-    public Mono<ResponseEntity<User>> updateUser(Integer id, User user) {
+    public Mono<ResponseEntity<Object>> updateUser(Integer id, User user, String bearerToken) {
         return null;
     }
 
     @Override
-    public Mono<ResponseEntity<User>> createUser(User user) {
+    public Mono<ResponseEntity<Object>> createUser(User user, String bearerToken) {
         return null;
     }
 }

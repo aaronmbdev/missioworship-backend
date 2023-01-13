@@ -96,7 +96,7 @@ public interface UserController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<Void>> deleteUser(@PathVariable Integer id);
+    Mono<ResponseEntity<Void>> deleteUser(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @GetMapping()
     @Operation(summary = "Obtener todos los usuarios registrados de forma paginada.")
@@ -119,10 +119,10 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<RestPaginationResponse<User>> getAllUsers(@Parameter(description = "Starting page, default is 0")
+    Mono<RestPaginationResponse<Object>> getAllUsers(@Parameter(description = "Starting page, default is 0")
                                                    @Min(0)
                                                    @RequestParam(required = false, defaultValue = "0")
-                                                   Integer startAt);
+                                                   Integer startAt, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PutMapping("{id}")
     @Operation(summary = "Actualizar datos de usuario")
@@ -171,7 +171,7 @@ public interface UserController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<User>> updateUser(@PathVariable Integer id, @RequestBody User user);
+    Mono<ResponseEntity<Object>> updateUser(@PathVariable Integer id, @RequestBody User user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PostMapping()
     @Operation(summary = "Crear nuevo usuario")
@@ -212,5 +212,5 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<User>> createUser(@RequestBody User user);
+    Mono<ResponseEntity<Object>> createUser(@RequestBody User user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 }
