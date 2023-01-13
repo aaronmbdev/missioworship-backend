@@ -50,7 +50,7 @@ public interface AbsencesController {
             })
     Mono<ResponseEntity<List<Absence>>> getAbsencesPerDate(@RequestBody AbsenceQueryInput input);
 
-    @PostMapping("/absent")
+    @PostMapping("absent")
     @Operation(summary = "Declara la no asistencia de un usuario para una fecha. Si no contiene id de usuario usa el del token. Si incluye id de usuario, el token debe ser de administrador.")
     @ApiResponses(
             value = {
@@ -94,7 +94,7 @@ public interface AbsencesController {
             })
     Mono<ResponseEntity<Void>> willBeAbsent(@RequestBody AbsenceBodyInput input);
 
-    @PostMapping("/attending")
+    @PostMapping("attending")
     @Operation(summary = "Idem que willBeAbsent pero para deshacer la declaración de no asistencia. Si no se ha marcado que no viene, no hace nada.")
     @ApiResponses(
             value = {

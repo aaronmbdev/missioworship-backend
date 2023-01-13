@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Mono;
 
 @Tag(name = "Controlador de inicio de sesión", description = "Endpoints para iniciar sesión y renovar tokens")
@@ -33,9 +34,9 @@ public interface LoginController {
                             }
                     )
             })
-    Mono<ResponseEntity<String>> loginAttempt();
+    Mono<ResponseEntity<String>> loginAttempt(@RequestBody TokenInput token);
 
     @PostMapping("/renew")
     @Operation(summary = "Renueva un token propio siempre que sea válido")
-    Mono<ResponseEntity<String>> renewToken();
+    Mono<ResponseEntity<String>> renewToken(@RequestBody TokenInput token);
 }
