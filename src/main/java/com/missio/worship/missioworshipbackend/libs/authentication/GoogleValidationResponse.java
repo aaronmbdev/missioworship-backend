@@ -1,9 +1,11 @@
 package com.missio.worship.missioworshipbackend.libs.authentication;
 
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
-public class ValidationResponse {
+@Getter
+public class GoogleValidationResponse {
     private boolean isValid;
     private String email;
     private String pictureUrl;
@@ -12,7 +14,7 @@ public class ValidationResponse {
     public boolean equals(Object obj) {
         if (obj == null) return false;
         if(obj.getClass() != getClass()) return false;
-        ValidationResponse newResponse = (ValidationResponse) obj;
+        GoogleValidationResponse newResponse = (GoogleValidationResponse) obj;
         return isValid == newResponse.isValid &&
                 email.equals(newResponse.email) &&
                 pictureUrl.equals(newResponse.pictureUrl);

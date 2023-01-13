@@ -1,5 +1,9 @@
 package com.missio.worship.missioworshipbackend.ports.api.login;
 
+import com.missio.worship.missioworshipbackend.libs.authentication.AuthenticationService;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.EmailNotFound;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,14 +11,35 @@ import reactor.core.publisher.Mono;
 
 @RequestMapping("v1/login/")
 @RestController
-public class LoginControllerImpl implements LoginController{
+public class LoginControllerImpl implements LoginController {
+
+    private final AuthenticationService service;
+
+    public LoginControllerImpl(AuthenticationService service) {
+        this.service = service;
+    }
+
     @Override
     public Mono<ResponseEntity<String>> loginAttempt(final TokenInput input) {
-        return null;
+        try {
+            val token = service.validateTokenAndLogin(input.token());
+            return Mono.just(ResponseEntity.ok(token));
+
+        } catch (EmailNotFound | InvalidProvidedToken e) {
+            return Mono.just(ResponseEntity.badRequest()
+                    .body(e.getMessage()));
+        }
     }
 
     @Override
     public Mono<ResponseEntity<String>> renewToken(final TokenInput input) {
-        return null;
+        try {
+            val token = service.validateTokenAndRenew(input.token());
+            return Mono.just(ResponseEntity.ok(token));
+
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(ResponseEntity.badRequest()
+                    .body(e.getMessage()));
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.missio.worship.missioworshipbackend.ports.api.absences;
 
-import com.missio.worship.missioworshipbackend.ports.api.errors.BadRequestResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.ForbiddenResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.NotFoundResponse;
-import com.missio.worship.missioworshipbackend.ports.api.errors.UnauthorizedResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Absence;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Mono;

@@ -21,14 +21,14 @@ public class GoogleTokenValidator {
      * @return a Validation response. If isValid is true, contains a valid email and profilePicUrl. If not, both fields will be empty
      * Ih the account doesn't have a picture, an empty string will be returned
      */
-    public ValidationResponse validateToken(final String tokenToValidate) {
-        val emptyValidationResponse = ValidationResponse.builder().isValid(false).email("").pictureUrl("").build();
+    public GoogleValidationResponse validateToken(final String tokenToValidate) {
+        val emptyValidationResponse = GoogleValidationResponse.builder().isValid(false).email("").pictureUrl("").build();
         try {
             var idToken = verifier.verify(tokenToValidate);
             if(idToken == null) return emptyValidationResponse;
 
             var payload = idToken.getPayload();
-            return ValidationResponse.builder()
+            return GoogleValidationResponse.builder()
                     .isValid(true)
                     .pictureUrl((String) payload.getOrDefault("picture", ""))
                     .email(payload.getEmail())

@@ -29,7 +29,7 @@ public class GoogleTokenValidatorTest {
         val picture = googleResponse.getPayload().getOrDefault("picture", "").toString();
 
         when(verifier.verify(randomToken)).thenReturn(googleResponse);
-        val expected = ValidationResponse.builder()
+        val expected = GoogleValidationResponse.builder()
                 .email(email)
                 .pictureUrl(picture)
                 .isValid(true)
@@ -42,7 +42,7 @@ public class GoogleTokenValidatorTest {
     public void nullResponseFromVerifierReturnsEmptyUnvalidResponse() throws GeneralSecurityException, IOException {
         val randomToken = UUID.randomUUID().toString();
         when(verifier.verify(randomToken)).thenReturn(null);
-        val expected = ValidationResponse.builder()
+        val expected = GoogleValidationResponse.builder()
                 .email("")
                 .pictureUrl("")
                 .isValid(false)
@@ -55,7 +55,7 @@ public class GoogleTokenValidatorTest {
     public void verificationFailsOnVerifierException() throws GeneralSecurityException, IOException {
         val randomToken = UUID.randomUUID().toString();
         when(verifier.verify(randomToken)).thenThrow(new IOException("Error"));
-        val expected = ValidationResponse.builder()
+        val expected = GoogleValidationResponse.builder()
                 .email("")
                 .pictureUrl("")
                 .isValid(false)

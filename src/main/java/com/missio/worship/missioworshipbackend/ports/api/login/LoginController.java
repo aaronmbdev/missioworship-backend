@@ -1,6 +1,6 @@
 package com.missio.worship.missioworshipbackend.ports.api.login;
 
-import com.missio.worship.missioworshipbackend.ports.api.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +21,7 @@ public interface LoginController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "Información validada y token emitido correctamente."),
                     @ApiResponse(
                             responseCode = "400",

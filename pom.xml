@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.missio.worship</groupId>
 	<artifactId>MissioWorshipBackend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<name>MissioWorshipBackend</name>
 	<description>MissioWorshipBackend</description>
 	<properties>
@@ -79,6 +79,11 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>8.0.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.19.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

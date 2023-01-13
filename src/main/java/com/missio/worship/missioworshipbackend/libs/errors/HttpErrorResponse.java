@@ -1,4 +1,4 @@
-package com.missio.worship.missioworshipbackend.ports.api.errors;
+package com.missio.worship.missioworshipbackend.libs.errors;
 
 import org.springframework.http.ResponseEntity;
 
