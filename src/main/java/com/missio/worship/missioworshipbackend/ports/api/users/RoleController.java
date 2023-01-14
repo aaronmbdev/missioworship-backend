@@ -1,7 +1,9 @@
 package com.missio.worship.missioworshipbackend.ports.api.users;
 
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +51,7 @@ public interface RoleController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> listRoles(@RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> listRoles(@RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
 
     @PostMapping
     @Operation(summary = "Crear nuevo rol")
@@ -62,6 +64,14 @@ public interface RoleController {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                                             schema = @Schema(implementation = User.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "El rol a eliminar no existe.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = NotFoundResponse.class))
                             }),
                     @ApiResponse(
                             responseCode = "403",
@@ -80,7 +90,7 @@ public interface RoleController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> createRole(String name, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> createRole(String name, @RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
 
     @DeleteMapping("{id}")
     @Operation(summary = "Crear nuevo usuario")
@@ -111,5 +121,5 @@ public interface RoleController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> deleteRole(Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> deleteRole(Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
 }

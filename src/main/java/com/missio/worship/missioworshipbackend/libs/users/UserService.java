@@ -52,7 +52,7 @@ public class UserService {
         var user = new User();
         user.setEmail(email);
         user.setName(name);
-        val saved = userRepository.saveAndFlush(user);
+        val saved = userRepository.save(user);
 
         val userRoles = validRoles.stream()
                 .map(rolId -> new UserRoles(saved, rolId))
