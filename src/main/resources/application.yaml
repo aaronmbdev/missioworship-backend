@@ -10,6 +10,7 @@ spring:
     password: ${MYSQL_PASSWORD:"password"}
 
 missio:
+  adminRole: "admin"
   captcha:
     secret: ${CAPTCHA_SECRET:}
   jwt:
