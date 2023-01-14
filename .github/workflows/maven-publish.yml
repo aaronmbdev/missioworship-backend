@@ -20,7 +20,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: missioWorship
+        server-id: missioworship
         settings-path: ${{ github.workspace }}
         
     - name: Test and verify
