@@ -8,17 +8,14 @@ import java.util.List;
 @Data
 public abstract class BasePaginationResponse<T> {
 
-    @JsonProperty(value = "max_results", index = 1)
-    protected Integer maxResults;
+    @JsonProperty(value = "offset", index = 2)
+    Integer offset;
 
-    @JsonProperty(value = "total_records", index = 2)
-    Long totalRecords;
+    @JsonProperty(value = "limit", index = 1)
+    Integer limit;
 
-    @JsonProperty(value = "start_at", index = 3)
-    Integer startAt;
-
-    @JsonProperty(value = "is_last", index = 4)
-    Boolean isLast;
+    @JsonProperty(value = "next_offset", index = 3)
+    Integer next_offset;
 
     public abstract List<T> getValues();
 

@@ -2,6 +2,7 @@ package com.missio.worship.missioworshipbackend.libs.users;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
 import com.missio.worship.missioworshipbackend.libs.users.errors.*;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.api.users.UserCreate;
@@ -100,6 +101,21 @@ public class UserService {
                         .map(Role::getName)
                         .toList())
                 .build();
+    }
+
+    public RestPaginationResponse<User> getUserList(Integer limit, Integer offset, String bearerToken) throws InvalidProvidedToken, LessThanZeroException, WrongOffsetValueException {
+        authorizationChecker.verifyTokenValidity(bearerToken);
+        if (limit == null) limit = 0;
+        if (offset == null) offset = 0;
+        if (limit < 0 || offset < 0) throw new LessThanZeroException();
+        if (limit != 0 && offset % limit != 0) throw new WrongOffsetValueException();
+        val values = userRepository.findAllByPagination(offset, limit);
+        RestPaginationResponse<User> response = new RestPaginationResponse<>();
+        response.setValues(values);
+        response.setLimit(limit);
+        response.setOffset(offset);
+        response.setNext_offset(limit + offset);
+        return response;
     }
 
     public void validateForUserCreation(final UserCreate userCreate) throws CannotDeleteUserException {

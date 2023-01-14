@@ -98,8 +98,17 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public Mono<RestPaginationResponse<Object>> getAllUsers(Integer startAt, String bearerToken) {
-        return null;
+    public Mono<ResponseEntity<Object>> getAllUsers(Integer limit, Integer offset, String bearerToken) {
+        try {
+            val pagination = service.getUserList(limit, offset, bearerToken);
+            return Mono.just(ResponseEntity.ok(pagination));
+        } catch (LessThanZeroException | WrongOffsetValueException e) {
+            val exception = new BadRequestResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        } catch (InvalidProvidedToken e) {
+            val exception = new UnauthorizedResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        }
     }
 
 }

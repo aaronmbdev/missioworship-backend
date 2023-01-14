@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -119,10 +120,10 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<RestPaginationResponse<Object>> getAllUsers(@Parameter(description = "Starting page, default is 0")
-                                                   @Min(0)
-                                                   @RequestParam(required = false, defaultValue = "0")
-                                                   Integer startAt, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> getAllUsers(
+            @Parameter(description = "Cantidad de elementos por página. Minimo 0") Integer limit,
+            @Parameter(description = "Cantidad de elementos a omitir. Se calcula como offset_anterior + limit. Debe ser múltiplo de limit") Integer offset,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PutMapping("{id}")
     @Operation(summary = "Actualizar datos de usuario")
