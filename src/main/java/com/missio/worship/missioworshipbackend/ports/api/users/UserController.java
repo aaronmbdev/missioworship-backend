@@ -96,7 +96,7 @@ public interface UserController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<Void>> deleteUser(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> deleteUser(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @GetMapping()
     @Operation(summary = "Obtener todos los usuarios registrados de forma paginada.")

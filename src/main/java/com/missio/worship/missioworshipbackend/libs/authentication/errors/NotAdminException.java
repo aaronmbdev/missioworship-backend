@@ -7,6 +7,6 @@ public class NotAdminException extends Exception{
     }
 
     public NotAdminException() {
-        super("El token introducido no es válido pero el usuario carece de autorización para realizar esta acción");
+        super("El usuario carece de autorización para realizar esta acción");
     }
 }

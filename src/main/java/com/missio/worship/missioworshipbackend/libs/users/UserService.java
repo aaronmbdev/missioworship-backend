@@ -1,25 +1,19 @@
 package com.missio.worship.missioworshipbackend.libs.users;
 
-import com.missio.worship.missioworshipbackend.libs.authentication.AuthTokenService;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.EmailAlreadyRegisteredException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.RolNotFoundException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
+import com.missio.worship.missioworshipbackend.libs.users.errors.*;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
+import com.missio.worship.missioworshipbackend.ports.api.users.UserCreate;
+import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.UserRoles;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRepository;
-import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRolesRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.data.util.Pair;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,17 +22,17 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
 
-    private final UserRolesRepository userRolesRepository;
-
     private final RolesService rolesService;
 
     private final AuthorizationChecker authorizationChecker;
 
     public UserFullResponse getUser(final Integer id, final String token) throws UserNotFound, InvalidProvidedToken {
         authorizationChecker.verifyTokenValidity(token);
-        val dbresponse = userRepository.findById(id).orElseThrow(() -> new UserNotFound("El usuario con id '" + id + "' no existe"));
-        val roleList = userRolesRepository.findUserRolesByUserId(id)
-                .stream().map(entry -> entry.getRole().getName()).toList();
+        val dbresponse = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
+        val roleList = rolesService.getRolesForUser(id)
+                .stream()
+                .map(Role::getName)
+                .toList();
         log.info("Encontrado usuario {} con roles {}", dbresponse, roleList);
 
         return UserFullResponse.builder()
@@ -50,8 +44,7 @@ public class UserService {
     }
 
     public UserFullResponse createUser(final String name, final String email, final List<Integer> roles, final String token) throws RolNotFoundException, InvalidProvidedToken, NotAdminException, InvalidRolException, EmailAlreadyRegisteredException {
-        val isAdmin = authorizationChecker.verifyTokenAndAdmin(token);
-        if(!isAdmin) throw new NotAdminException("El usuario no tiene permisos para realizar esta acción");
+        doAdminAuthorization(token);
         val validRoles = rolesService.validateListOfRoles(roles);
         if(emailExists(email)) throw new EmailAlreadyRegisteredException(email);
 
@@ -59,7 +52,6 @@ public class UserService {
         user.setEmail(email);
         user.setName(name);
         val saved = userRepository.save(user);
-        log.info("Se creó el usuario '{}'", user);
 
         val userRoles = validRoles.stream()
                 .map(rolId -> new UserRoles(saved, rolId))
@@ -74,6 +66,50 @@ public class UserService {
                 .roles(userRoles.stream()
                         .map(entry -> entry.getRole().getName()).toList())
                 .build();
+    }
+
+    public void deleteUser(final Integer id, final String token) throws InvalidProvidedToken, NotAdminException, UserNotFound, CannotDeleteUserException, EmptyResultDataAccessException {
+        doAdminAuthorization(token);
+        val user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
+        val roles = rolesService.getRolesForUser(id);
+        if(authorizationChecker.userIsAdminOrHimself(roles, user, token)) {
+            throw new CannotDeleteUserException("El usuario a borrar es administrador. Sólo puede borrarse él mismo.");
+        }
+        userRepository.deleteById(id);
+    }
+
+    public UserFullResponse updateUser(final Integer id, final UserCreate userCreate, final String token) throws InvalidProvidedToken, NotAdminException, UserNotFound, RolNotFoundException, CannotDeleteUserException {
+        doAdminAuthorization(token);
+        var user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
+        val existingRoles = rolesService.getRolesForUser(id);
+        if(authorizationChecker.userIsAdminOrHimself(existingRoles, user, token)) {
+            throw new CannotDeleteUserException("El usuario a borrar es administrador. Sólo puede borrarse él mismo.");
+        }
+        if(userCreate.name() != null) user.setName(userCreate.name());
+        if(userCreate.email() != null) user.setEmail(userCreate.email());
+        var roles = rolesService.getRolesForUser(id);
+        if(userCreate.roles() != null) {
+            roles = rolesService.setRolesForUser(userCreate.roles(), user);
+        }
+        val response = userRepository.save(user);
+        return UserFullResponse.builder()
+                .id(response.getId())
+                .name(response.getName())
+                .email(response.getEmail())
+                .roles(roles.stream()
+                        .map(Role::getName)
+                        .toList())
+                .build();
+    }
+
+    public void validateForUserCreation(final UserCreate userCreate) throws CannotDeleteUserException {
+        val anyNull =  userCreate.name() == null || userCreate.email() == null || userCreate.roles() == null;
+        if (anyNull) throw new CannotDeleteUserException("Uno o más campos obligatorios son nulos. No se puede crear el usuario");
+    }
+
+    private void doAdminAuthorization(final String token) throws InvalidProvidedToken, NotAdminException {
+        val isAdmin = authorizationChecker.verifyTokenAndAdmin(token);
+        if(!isAdmin) throw new NotAdminException();
     }
 
     private boolean emailExists(final String email) {

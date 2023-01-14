@@ -8,10 +8,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.UserService;
-import com.missio.worship.missioworshipbackend.libs.users.errors.EmailAlreadyRegisteredException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.RolNotFoundException;
-import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
+import com.missio.worship.missioworshipbackend.libs.users.errors.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -30,11 +27,9 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public Mono<ResponseEntity<Object>> getUser(Integer id, String dirtyToken) {
-        if(dirtyToken == null) return Mono.just(new ResponseEntity<>(
-                new UnauthorizedResponse("No se ha enviado el token de autenticación"), HttpStatus.UNAUTHORIZED)
-        );
         try {
             val user = service.getUser(id, dirtyToken);
+            log.info("Obtenido usuario {} correctamente", user);
             return Mono.just(ResponseEntity.ok(user));
         } catch (UserNotFound e) {
             val exception = new NotFoundResponse(e.getMessage());
@@ -49,7 +44,9 @@ public class UserControllerImpl implements UserController {
     public Mono<ResponseEntity<Object>> createUser(UserCreate user, String bearerToken) {
         try {
             log.info("Se intenta crear un usuario '{}'", user);
+            service.validateForUserCreation(user);
             val result = service.createUser(user.name(), user.email(), user.roles(), bearerToken);
+            log.info("Usuario creado correctamente; {}", result);
             return Mono.just(ResponseEntity.ok(result));
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());
@@ -57,36 +54,47 @@ public class UserControllerImpl implements UserController {
         } catch(NotAdminException e) {
             val exception = new ForbiddenResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.FORBIDDEN));
-        } catch (InvalidRolException | RolNotFoundException | EmailAlreadyRegisteredException e) {
+        } catch (CannotDeleteUserException | InvalidRolException | RolNotFoundException | EmailAlreadyRegisteredException e) {
             val exception = new BadRequestResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
         }
     }
 
-    /**
-     * Borramos un usuario siempre que no sea admin y quien borra sea admin
-     * Si borro un admin, solo puedo si soy yo mismo
-     * @param id
-     * @param bearerToken
-     * @return
-     */
-    @Override
-    public Mono<ResponseEntity<Void>> deleteUser(Integer id, String bearerToken) {
-        return null;
-    }
 
-    /**
-     * Mejor cambiarlo todo siempre que el usuario no sea admin y yo sea admin
-     * Si el usuario es admin, yo tengo que ser el usuario
-     * @param id
-     * @param user
-     * @param bearerToken
-     * @return
-     */
+    @Override
+    public Mono<ResponseEntity<Object>> deleteUser(Integer id, String bearerToken) {
+        try {
+            service.deleteUser(id, bearerToken);
+            log.info("Borrado el usuario con id '{}'",id);
+            return Mono.empty();
+        } catch (UserNotFound | CannotDeleteUserException e) {
+            val exception = new BadRequestResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        } catch (InvalidProvidedToken e) {
+            val exception = new UnauthorizedResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch (NotAdminException e) {
+            val exception = new ForbiddenResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.FORBIDDEN));
+        }
+    }
 
     @Override
     public Mono<ResponseEntity<Object>> updateUser(Integer id, UserCreate user, String bearerToken) {
-        return null;
+        try {
+            val response = service.updateUser(id, user, bearerToken);
+            log.info("Usuario '{}' actualizado correctamente con los siguientes datos: '{}'", id, user);
+            return Mono.just(ResponseEntity.ok(response));
+        } catch (UserNotFound | CannotDeleteUserException e) {
+            val exception = new BadRequestResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        } catch (InvalidProvidedToken e) {
+            val exception = new UnauthorizedResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch (NotAdminException e) {
+            val exception = new ForbiddenResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.FORBIDDEN));
+        }
     }
 
     @Override

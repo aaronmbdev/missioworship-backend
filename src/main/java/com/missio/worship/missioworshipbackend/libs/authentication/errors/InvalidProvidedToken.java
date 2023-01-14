@@ -6,6 +6,6 @@ public class InvalidProvidedToken extends Exception {
     }
 
     public InvalidProvidedToken() {
-        super("El token introducido no es válido.");
+        super("Error de autorización. La sesión no es valida o ha caducado");
     }
 }
