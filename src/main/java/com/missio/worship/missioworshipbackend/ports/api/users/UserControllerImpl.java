@@ -8,7 +8,9 @@ import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.UserService;
+import com.missio.worship.missioworshipbackend.libs.users.errors.EmailAlreadyRegisteredException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.RolNotFoundException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +57,7 @@ public class UserControllerImpl implements UserController {
         } catch(NotAdminException e) {
             val exception = new ForbiddenResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.FORBIDDEN));
-        } catch (InvalidRolException e) {
+        } catch (InvalidRolException | RolNotFoundException | EmailAlreadyRegisteredException e) {
             val exception = new BadRequestResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
         }

@@ -3,6 +3,7 @@ package com.missio.worship.missioworshipbackend.libs.users;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.RolNotFoundException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.RoleAlreadyExistsException;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,11 +50,12 @@ public class RolesService {
     }
 
     public List<Role> validateListOfRoles(List<Integer> rolesIds) {
-        return rolesRepository.findAllById(rolesIds);
+        return rolesIds.stream()
+                .map(entry -> rolesRepository.findById(entry).orElseThrow(() -> new RolNotFoundException(entry))).toList();
     }
 
-    public void putUserRoles(List<UserRoles> userRoles) {
-        userRolesRepository.saveAll(userRoles);
+    public List<UserRoles> putUserRoles(List<UserRoles> userRoles) {
+        return userRolesRepository.saveAll(userRoles);
     }
 
     private void checkAdminAuthOrDie(final String token) throws InvalidProvidedToken, NotAdminException {
