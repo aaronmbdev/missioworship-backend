@@ -1,6 +1,7 @@
 name: Pack and ship (Release)
 
 on:
+  workflow_dispatch:
   release:
     types: [created]
 
@@ -19,8 +20,8 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+        server-id: missioWorship
+        settings-path: ${{ github.workspace }}
         
     - name: Test and verify
       run: mvn test verify
