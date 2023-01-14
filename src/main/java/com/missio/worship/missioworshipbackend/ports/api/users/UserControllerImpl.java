@@ -4,6 +4,7 @@ import com.missio.worship.missioworshipbackend.libs.authentication.errors.Invali
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.UserService;
@@ -46,9 +47,12 @@ public class UserControllerImpl implements UserController {
         try {
             val result = service.createUser(user.name(), user.email(), user.roles(), bearerToken);
             return Mono.just(ResponseEntity.ok(result));
-        } catch (NotAdminException | InvalidProvidedToken e) {
+        } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch(NotAdminException e) {
+            val exception = new ForbiddenResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.FORBIDDEN));
         } catch (InvalidRolException e) {
             val exception = new BadRequestResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
