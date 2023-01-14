@@ -63,18 +63,34 @@ public class UserControllerImpl implements UserController {
         }
     }
 
+    /**
+     * Borramos un usuario siempre que no sea admin y quien borra sea admin
+     * Si borro un admin, solo puedo si soy yo mismo
+     * @param id
+     * @param bearerToken
+     * @return
+     */
     @Override
     public Mono<ResponseEntity<Void>> deleteUser(Integer id, String bearerToken) {
         return null;
     }
 
+    /**
+     * Mejor cambiarlo todo siempre que el usuario no sea admin y yo sea admin
+     * Si el usuario es admin, yo tengo que ser el usuario
+     * @param id
+     * @param user
+     * @param bearerToken
+     * @return
+     */
+
     @Override
-    public Mono<RestPaginationResponse<Object>> getAllUsers(Integer startAt, String bearerToken) {
+    public Mono<ResponseEntity<Object>> updateUser(Integer id, UserCreate user, String bearerToken) {
         return null;
     }
 
     @Override
-    public Mono<ResponseEntity<Object>> updateUser(Integer id, UserCreate user, String bearerToken) {
+    public Mono<RestPaginationResponse<Object>> getAllUsers(Integer startAt, String bearerToken) {
         return null;
     }
 
