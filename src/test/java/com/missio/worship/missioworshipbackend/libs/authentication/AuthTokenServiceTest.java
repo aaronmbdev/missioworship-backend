@@ -71,7 +71,7 @@ class AuthTokenServiceTest {
     @Test
     void validTokenVerificationTest() {
         val name = "aaron";
-        val email = "test@mail.com";
+        val email = "aaron@mbotton.com";
         val url = "http://noexistsx.com";
         val roles = List.of("One", "Two");
         var jwt = new AppProperties.JWTConfig();
@@ -79,6 +79,7 @@ class AuthTokenServiceTest {
         when(properties.getJwt()).thenReturn(jwt);
 
         val token = service.issueToken(name, email, url, roles);
+        log.info("Test '{}'",token);
         val result = service.verifyTokenValidity(token, new Date().toInstant());
         assertThat(result.isValid()).isTrue();
         assertThat(result.getName()).isEqualTo(name);

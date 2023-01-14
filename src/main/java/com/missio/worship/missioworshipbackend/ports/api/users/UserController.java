@@ -5,6 +5,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
+import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ import reactor.core.publisher.Mono;
 @Tag(name = "Controlador de Usuario", description = "Endpoints para usuario de missio")
 public interface UserController {
 
-    @GetMapping("{$id}")
+    @GetMapping("{id}")
     @Operation(summary = "Obtener información de un usuario.")
     @ApiResponses(
             value = {
@@ -43,16 +45,6 @@ public interface UserController {
                                         schema = @Schema(implementation = UnauthorizedResponse.class))
                         }),
                     @ApiResponse(
-                            responseCode = "400",
-                            description = "Error en el formato. Verifique que la fecha tiene un formato adecuado dd/MM/YYYY y que se incluyen todos los campos.",
-                            content = {
-                                    @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = BadRequestResponse.class)
-                                    )
-                            }
-                    ),
-                    @ApiResponse(
                         responseCode = "404",
                         description = "El usuario solicitado no existe en el sistema",
                         content = {
@@ -61,9 +53,9 @@ public interface UserController {
                                         schema = @Schema(implementation = NotFoundResponse.class))
                         })
             })
-    Mono<ResponseEntity<User>> getUser(@PathVariable Integer id);
+    Mono<ResponseEntity<Object>> getUser(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
-    @DeleteMapping("{$id}")
+    @DeleteMapping("{id}")
     @Operation(summary = "Eliminar un usuario. Requiere token de administrador")
     @ApiResponses(
             value = {
@@ -105,7 +97,7 @@ public interface UserController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<Void>> deleteUser(@PathVariable Integer id);
+    Mono<ResponseEntity<Object>> deleteUser(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @GetMapping()
     @Operation(summary = "Obtener todos los usuarios registrados de forma paginada.")
@@ -128,12 +120,12 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<RestPaginationResponse<User>> getAllUsers(@Parameter(description = "Starting page, default is 0")
-                                                   @Min(0)
-                                                   @RequestParam(required = false, defaultValue = "0")
-                                                   Integer startAt);
+    Mono<ResponseEntity<Object>> getAllUsers(
+            @Parameter(description = "Cantidad de elementos por página. Minimo 0") Integer limit,
+            @Parameter(description = "Cantidad de elementos a omitir. Se calcula como offset_anterior + limit. Debe ser múltiplo de limit") Integer offset,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
-    @PutMapping("{$id}")
+    @PutMapping("{id}")
     @Operation(summary = "Actualizar datos de usuario")
     @ApiResponses(
             value = {
@@ -180,9 +172,9 @@ public interface UserController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<User>> updateUser(@PathVariable Integer id, @RequestBody User user);
+    Mono<ResponseEntity<Object>> updateUser(@PathVariable Integer id, @RequestBody UserCreate user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
-    @PostMapping()
+    @PostMapping
     @Operation(summary = "Crear nuevo usuario")
     @ApiResponses(
             value = {
@@ -221,5 +213,5 @@ public interface UserController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<User>> createUser(@RequestBody User user);
+    Mono<ResponseEntity<Object>> createUser(@RequestBody UserCreate user, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 }

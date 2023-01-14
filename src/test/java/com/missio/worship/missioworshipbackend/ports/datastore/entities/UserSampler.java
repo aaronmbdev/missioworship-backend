@@ -7,7 +7,6 @@ public class UserSampler {
         user.setId(1);
         user.setEmail("myEmail@email.com");
         user.setName("Dummy user");
-        user.setRoles(Set.of(RoleSampler.sample(), RoleSampler.sample()));
         return user;
     }
 }

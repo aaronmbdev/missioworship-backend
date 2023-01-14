@@ -116,4 +116,14 @@
 		</plugins>
 	</build>
 
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>missioWorship</id>
+			<name>Missio Worship Backend</name>
+			<url>https://maven.pkg.github.com/aaronmbdev/missioworship-backend</url>
+			<layout>default</layout>
+		</repository>
+	</distributionManagement>
+
 </project>

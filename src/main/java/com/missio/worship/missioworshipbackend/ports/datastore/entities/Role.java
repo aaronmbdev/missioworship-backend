@@ -3,6 +3,8 @@ package com.missio.worship.missioworshipbackend.ports.datastore.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @ToString
 @Getter
 @Setter
@@ -19,8 +21,4 @@ public class Role {
     @NonNull
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @ToString.Exclude
-    private User user_id;
 }

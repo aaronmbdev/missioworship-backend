@@ -10,6 +10,7 @@ spring:
     password: ${MYSQL_PASSWORD:"password"}
 
 missio:
+  adminRole: "One"
   captcha:
     secret: ${CAPTCHA_SECRET:}
   jwt:
@@ -29,3 +30,4 @@ management:
   tracing:
     sampling:
       probability: 1.0
+

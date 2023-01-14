@@ -18,7 +18,7 @@ public abstract class HttpErrorResponse {
     }
 
     protected HttpErrorResponse(Instant time, int code, String error) {
-        this(time, code, Arrays.asList(error));
+        this(time, code, List.of(error));
     }
 
     public ResponseEntity<Object> toObjectEntity() {

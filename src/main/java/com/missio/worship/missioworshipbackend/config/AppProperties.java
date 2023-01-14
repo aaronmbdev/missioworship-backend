@@ -13,6 +13,8 @@ public class AppProperties {
     private CaptchaConfig captcha;
     private JWTConfig jwt;
 
+    private String adminRole;
+
     @Getter
     @Setter
     public static class CaptchaConfig {
