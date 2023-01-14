@@ -12,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserFullResponse {
+
+    private Integer id;
     private String name;
     private String email;
     private List<Pair<Integer,String>> roles;

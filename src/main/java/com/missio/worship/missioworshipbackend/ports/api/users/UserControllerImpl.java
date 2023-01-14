@@ -10,8 +10,8 @@ import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.UserService;
 import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
-import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("v1/user/")
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class UserControllerImpl implements UserController {
     private final UserService service;
 
@@ -45,6 +46,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public Mono<ResponseEntity<Object>> createUser(UserCreate user, String bearerToken) {
         try {
+            log.info("Se intenta crear un usuario '{}'", user);
             val result = service.createUser(user.name(), user.email(), user.roles(), bearerToken);
             return Mono.just(ResponseEntity.ok(result));
         } catch (InvalidProvidedToken e) {

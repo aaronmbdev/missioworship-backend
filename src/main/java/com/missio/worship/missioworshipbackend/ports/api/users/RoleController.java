@@ -1,12 +1,13 @@
 package com.missio.worship.missioworshipbackend.ports.api.users;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
-import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
+import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,29 +15,35 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @Tag(name = "Controlador de Roles", description = "CRUD sencillo para la gestión de roles")
 public interface RoleController {
 
-    @PostMapping
-    @Operation(summary = "Crear nuevo usuario")
+    @GetMapping
+    @Operation(summary = "Obtener lista de roles")
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "201",
+                            responseCode = "200",
                             description = "Información obtenida correctamente",
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = User.class))
+                                            array = @ArraySchema(schema = @Schema(implementation = Role.class)))
                             }),
                     @ApiResponse(
                             responseCode = "403",
                             description = "El nivel de autorización no es adecuado. Solo un admin puede hacer esto.",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = ForbiddenResponse.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "El rol con ese nombre ya existe en el sistema.",
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -58,12 +65,12 @@ public interface RoleController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "Información creada correctamente",
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = User.class))
+                                            schema = @Schema(implementation = Role.class))
                             }),
                     @ApiResponse(
                             responseCode = "404",
@@ -90,10 +97,10 @@ public interface RoleController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> createRole(String name, @RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
+    Mono<ResponseEntity<Object>> createRole(@RequestBody RoleCreate roleCreate, @RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
 
     @DeleteMapping("{id}")
-    @Operation(summary = "Crear nuevo usuario")
+    @Operation(summary = "Eliminar un rol determinado")
     @ApiResponses(
             value = {
                     @ApiResponse(
@@ -102,7 +109,7 @@ public interface RoleController {
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = User.class))
+                                            schema = @Schema(implementation = Void.class))
                             }),
                     @ApiResponse(
                             responseCode = "403",
@@ -121,5 +128,5 @@ public interface RoleController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> deleteRole(Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
+    Mono<ResponseEntity<Object>> deleteRole(@PathVariable Integer id, @RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
 }

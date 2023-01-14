@@ -5,6 +5,7 @@ import com.missio.worship.missioworshipbackend.libs.authentication.AuthTokenServ
 import com.missio.worship.missioworshipbackend.libs.authentication.MissioValidationResponse;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthorizationChecker {
     private final AuthTokenService tokenService;
 
@@ -30,6 +32,7 @@ public class AuthorizationChecker {
         val cleanToken = tokenService.extractTokenFromHeader(token);
         val tokenVerification = tokenService.verifyTokenValidity(cleanToken, new Date().toInstant());
         if(!tokenVerification.isValid()) {
+            log.info("El token provisto no es válido. Se interrumpe ejecución.");
             throw new InvalidProvidedToken();
         }
         return tokenVerification;

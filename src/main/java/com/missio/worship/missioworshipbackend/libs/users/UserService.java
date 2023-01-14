@@ -38,6 +38,7 @@ public class UserService {
         log.info("Encontrado usuario {} con roles {}", dbresponse, roleList);
 
         return UserFullResponse.builder()
+                .id(dbresponse.getId())
                 .name(dbresponse.getName())
                 .email(dbresponse.getEmail())
                 .roles(roleList.stream().map(entry -> Pair.of(entry.getId(), entry.getRole().getName())).toList())
@@ -53,16 +54,23 @@ public class UserService {
         user.setEmail(email);
         user.setName(name);
         val saved = userRepository.save(user);
+        log.info("Se creó el usuario '{}'", user);
 
         val userRoles = validRoles.stream()
                 .map(rolId -> new UserRoles(saved, rolId))
                 .toList();
-
+        log.info("Se van a crear las siguientes relaciones rol-usuario: '{}'", userRoles);
         rolesService.putUserRoles(userRoles);
 
         return UserFullResponse.builder()
+                .id(saved.getId())
                 .name(saved.getName())
                 .email(saved.getEmail())
+                .roles(
+                        userRoles.stream()
+                        .map(entry -> Pair.of(entry.getId(), entry.getRole().getName()))
+                        .toList()
+                )
                 .build();
     }
 }
