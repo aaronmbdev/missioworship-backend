@@ -48,7 +48,7 @@ public interface AbsencesController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<List<Absence>>> getAbsencesPerDate(@RequestBody AbsenceQueryInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> getAbsencesPerDate(@RequestBody AbsenceQueryInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PostMapping("absent")
     @Operation(summary = "Declara la no asistencia de un usuario para una fecha. Si no contiene id de usuario usa el del token. Si incluye id de usuario, el token debe ser de administrador.")
@@ -92,7 +92,7 @@ public interface AbsencesController {
                             }
                     )
             })
-    Mono<ResponseEntity<Void>> willBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> willBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PostMapping("attending")
     @Operation(summary = "Idem que willBeAbsent pero para deshacer la declaración de no asistencia. Si no se ha marcado que no viene, no hace nada.")
@@ -136,5 +136,5 @@ public interface AbsencesController {
                             }
                     )
             })
-    Mono<ResponseEntity<Void>> willNotBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> willNotBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 }
