@@ -1,5 +1,7 @@
 # Missio Worship - Backend
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aaronmbdev_missioworship-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aaronmbdev_missioworship-backend)
+
 ### Especificaciones y requerimientos
 
 1. Java 17+

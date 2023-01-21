@@ -22,24 +22,19 @@ public class AuthorizationChecker {
 
     private final AppProperties properties;
 
-    public void verifyTokenValidity(final String token) throws InvalidProvidedToken {
-        doTokenVerification(token);
-    }
 
-    public boolean userIsAdminOrHimself(List<Role> roles, final User user, final String token) throws InvalidProvidedToken {
+    public boolean userIsAdminOrHimself(List<Role> roles, final User user, final MissioValidationResponse decodedToken) throws InvalidProvidedToken {
         val isAdmin = roles.stream()
                 .anyMatch(role -> role.getName().equals(properties.getAdminRole()));
-        val request = doTokenVerification(token);
-        val myself = request.getEmail().equals(user.getEmail());
+        val myself = decodedToken.getEmail().equals(user.getEmail());
         return isAdmin && !myself;
     }
 
-    public boolean verifyTokenAndAdmin(String token) throws InvalidProvidedToken {
-        val response = doTokenVerification(token);
-        return response.getRoles().contains(this.properties.getAdminRole());
+    public boolean verifyTokenAndAdmin(MissioValidationResponse decodedToken) throws InvalidProvidedToken {
+        return decodedToken.getRoles().contains(this.properties.getAdminRole());
     }
 
-    private MissioValidationResponse doTokenVerification(String token) throws InvalidProvidedToken {
+    public MissioValidationResponse doTokenVerification(String token) throws InvalidProvidedToken {
         if(token == null) {
             log.info("No se ha enviado el token de seguridad");
             throw new InvalidProvidedToken();

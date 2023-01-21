@@ -2,7 +2,6 @@ package com.missio.worship.missioworshipbackend.ports.api.users;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
-import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
