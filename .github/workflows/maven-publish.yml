@@ -38,13 +38,13 @@ jobs:
 
     - name: Commit changes
       shell: bash
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        ls
         git config --global user.email "aaron@mbotton.com"
         git config --global user.name "Cloud Automation"
         git add pom.xml
         git commit -m 'chore: [auto] Update ${{ env.cversion }} image version to ${{ steps.bump_version.outputs.next-version }}'
-        git diff
         git push
 
     - name: Build with Maven
