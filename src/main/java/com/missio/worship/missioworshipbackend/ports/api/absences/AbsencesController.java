@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public interface AbsencesController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<List<Absence>>> getAbsencesPerDate(@RequestBody AbsenceQueryInput input);
+    Mono<ResponseEntity<List<Absence>>> getAbsencesPerDate(@RequestBody AbsenceQueryInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PostMapping("absent")
     @Operation(summary = "Declara la no asistencia de un usuario para una fecha. Si no contiene id de usuario usa el del token. Si incluye id de usuario, el token debe ser de administrador.")
@@ -91,7 +92,7 @@ public interface AbsencesController {
                             }
                     )
             })
-    Mono<ResponseEntity<Void>> willBeAbsent(@RequestBody AbsenceBodyInput input);
+    Mono<ResponseEntity<Void>> willBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PostMapping("attending")
     @Operation(summary = "Idem que willBeAbsent pero para deshacer la declaración de no asistencia. Si no se ha marcado que no viene, no hace nada.")
@@ -135,5 +136,5 @@ public interface AbsencesController {
                             }
                     )
             })
-    Mono<ResponseEntity<Void>> willNotBeAbsent(@RequestBody AbsenceBodyInput input);
+    Mono<ResponseEntity<Void>> willNotBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
 }

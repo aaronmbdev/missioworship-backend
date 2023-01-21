@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 public class AbsencesControllerImpl implements AbsencesController{
     @Override
-    public Mono<ResponseEntity<List<Absence>>> getAbsencesPerDate(AbsenceQueryInput input) {
+    public Mono<ResponseEntity<List<Absence>>> getAbsencesPerDate(AbsenceQueryInput input, String token) {
         /*
         Si el usuario no existe, devolvemos 404
          */
@@ -20,7 +20,7 @@ public class AbsencesControllerImpl implements AbsencesController{
     }
 
     @Override
-    public Mono<ResponseEntity<Void>> willBeAbsent(AbsenceBodyInput input) {
+    public Mono<ResponseEntity<Void>> willBeAbsent(AbsenceBodyInput input, String token) {
         /*
         Dado un user_id y una fecha, queremos declarar que el usuario no viene en dicha fecha
         Si ya existe un registro, no se hace nada.
@@ -31,7 +31,7 @@ public class AbsencesControllerImpl implements AbsencesController{
     }
 
     @Override
-    public Mono<ResponseEntity<Void>> willNotBeAbsent(AbsenceBodyInput input) {
+    public Mono<ResponseEntity<Void>> willNotBeAbsent(AbsenceBodyInput input, String token) {
         /*
         Dado un user_id y una fecha, queremos declarar que el usuario si viene en dicha fecha
         Si no existe un registro de ausencia, no se hace nada

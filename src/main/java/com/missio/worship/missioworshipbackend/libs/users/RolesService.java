@@ -83,7 +83,8 @@ public class RolesService {
     }
 
     private void checkAdminAuthOrDie(final String token) throws InvalidProvidedToken, NotAdminException {
-        if(!authorizationChecker.verifyTokenAndAdmin(token)) {
+        val decoded = authorizationChecker.doTokenVerification(token);
+        if(!authorizationChecker.verifyTokenAndAdmin(decoded)) {
             throw new NotAdminException();
         }
     }

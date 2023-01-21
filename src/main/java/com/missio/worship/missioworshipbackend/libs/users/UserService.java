@@ -1,5 +1,6 @@
 package com.missio.worship.missioworshipbackend.libs.users;
 
+import com.missio.worship.missioworshipbackend.libs.authentication.MissioValidationResponse;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
@@ -70,20 +71,20 @@ public class UserService {
     }
 
     public void deleteUser(final Integer id, final String token) throws InvalidProvidedToken, NotAdminException, UserNotFound, CannotDeleteUserException, EmptyResultDataAccessException {
-        doAdminAuthorization(token);
+        val decodedToken = doAdminAuthorization(token);
         val user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
         val roles = rolesService.getRolesForUser(id);
-        if(authorizationChecker.userIsAdminOrHimself(roles, user, token)) {
+        if(authorizationChecker.userIsAdminOrHimself(roles, user, decodedToken)) {
             throw new CannotDeleteUserException("El usuario a borrar es administrador. Sólo puede borrarse él mismo.");
         }
         userRepository.deleteById(id);
     }
 
     public UserFullResponse updateUser(final Integer id, final UserCreate userCreate, final String token) throws InvalidProvidedToken, NotAdminException, UserNotFound, RolNotFoundException, CannotDeleteUserException {
-        doAdminAuthorization(token);
+        val decodedToken = doAdminAuthorization(token);
         var user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
         val existingRoles = rolesService.getRolesForUser(id);
-        if(authorizationChecker.userIsAdminOrHimself(existingRoles, user, token)) {
+        if(authorizationChecker.userIsAdminOrHimself(existingRoles, user, decodedToken)) {
             throw new CannotDeleteUserException("El usuario a borrar es administrador. Sólo puede borrarse él mismo.");
         }
         if(userCreate.name() != null) user.setName(userCreate.name());
@@ -123,9 +124,11 @@ public class UserService {
         if (anyNull) throw new CannotDeleteUserException("Uno o más campos obligatorios son nulos. No se puede crear el usuario");
     }
 
-    private void doAdminAuthorization(final String token) throws InvalidProvidedToken, NotAdminException {
-        val isAdmin = authorizationChecker.verifyTokenAndAdmin(token);
+    private MissioValidationResponse doAdminAuthorization(final String token) throws InvalidProvidedToken, NotAdminException {
+        val decoded = authorizationChecker.doTokenVerification(token);
+        val isAdmin = authorizationChecker.verifyTokenAndAdmin(decoded);
         if(!isAdmin) throw new NotAdminException();
+        return decoded;
     }
 
     private boolean emailExists(final String email) {
