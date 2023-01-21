@@ -22,9 +22,6 @@ jobs:
         distribution: 'temurin'
         server-id: missioworship
         settings-path: ${{ github.workspace }}
-        
-    - name: Test and verify
-      run: mvn test verify
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
