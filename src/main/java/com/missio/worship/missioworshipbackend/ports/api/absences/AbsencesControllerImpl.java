@@ -24,8 +24,7 @@ public class AbsencesControllerImpl implements AbsencesController{
         /*
         Dado un user_id y una fecha, queremos declarar que el usuario no viene en dicha fecha
         Si ya existe un registro, no se hace nada.
-        Si el usuario no existe devolvemos 404
-        Si el usuario del token no es admin, miramos que el user_id sea igual al del token
+
          */
         return null;
     }

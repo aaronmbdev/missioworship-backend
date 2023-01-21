@@ -29,8 +29,8 @@ public class UserService {
     private final AuthorizationChecker authorizationChecker;
 
     public UserFullResponse getUser(final Integer id, final String token) throws UserNotFound, InvalidProvidedToken {
-        authorizationChecker.verifyTokenValidity(token);
-        val dbresponse = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
+        authorizationChecker.doTokenVerification(token);
+        val dbresponse = getUser(id);
         val roleList = rolesService.getRolesForUser(id)
                 .stream()
                 .map(Role::getName)
@@ -105,7 +105,7 @@ public class UserService {
     }
 
     public RestPaginationResponse<User> getUserList(Integer limit, Integer offset, String bearerToken) throws InvalidProvidedToken, LessThanZeroException, WrongOffsetValueException {
-        authorizationChecker.verifyTokenValidity(bearerToken);
+        authorizationChecker.doTokenVerification(bearerToken);
         if (limit == null) limit = 0;
         if (offset == null) offset = 0;
         if (limit < 0 || offset < 0) throw new LessThanZeroException();
@@ -129,6 +129,12 @@ public class UserService {
         val isAdmin = authorizationChecker.verifyTokenAndAdmin(decoded);
         if(!isAdmin) throw new NotAdminException();
         return decoded;
+    }
+
+    protected User getUser(final Integer id) throws UserNotFound {
+        val dbresponse = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
+        log.info("Encontrado usuario {}", dbresponse);
+        return dbresponse;
     }
 
     private boolean emailExists(final String email) {

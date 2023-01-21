@@ -22,9 +22,6 @@ public class AuthorizationChecker {
 
     private final AppProperties properties;
 
-    public void verifyTokenValidity(final String token) throws InvalidProvidedToken {
-        doTokenVerification(token);
-    }
 
     public boolean userIsAdminOrHimself(List<Role> roles, final User user, final MissioValidationResponse decodedToken) throws InvalidProvidedToken {
         val isAdmin = roles.stream()
