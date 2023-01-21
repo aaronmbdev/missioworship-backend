@@ -29,9 +29,8 @@ public class AbsenceService {
     private final AbsencesRepository repository;
 
     public List<Absence> getAbsencesPerUserAndDate(final Integer userId, final Date begin, final Date end, final String token) throws InvalidProvidedToken, UserNotFound {
-        val decodedToken = authorizationChecker.doTokenVerification(token);
-        val user = userService.getUser(userId ,token);
-        return null;
+        authorizationChecker.doTokenVerification(token);
+        return repository.findAllByUserAndAbsenceDate(userId, begin, end);
     }
 
     public void declareAbsence(final Integer userId, final Date date, final String token) throws InvalidProvidedToken, UserNotFound, CannotDeclareAbsenceException {
