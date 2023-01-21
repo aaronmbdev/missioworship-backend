@@ -28,9 +28,6 @@ public class AbsencesControllerImpl implements AbsencesController{
         try {
              val response = service.getAbsencesPerUserAndDate(input.userId(), input.begin(), input.end(), token);
              return Mono.just(ResponseEntity.ok(response));
-        } catch (UserNotFound e) {
-            val exception = new NotFoundResponse(e.getMessage());
-            return Mono.just(new ResponseEntity<>(exception, HttpStatus.NOT_FOUND));
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
