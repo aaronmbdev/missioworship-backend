@@ -23,4 +23,6 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
       - name: Test branch
-        run: mvn -B verify
+        run: mvn -B verify sonar:sonar -Pcoverage
+        with:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
