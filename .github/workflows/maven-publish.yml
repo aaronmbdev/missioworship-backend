@@ -24,10 +24,7 @@ jobs:
         settings-path: ${{ github.workspace }}
         
     - name: Get current version
-      run: echo "{cversion}={$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)}" >> $GITHUB_ENV
-
-    - name: Test step
-      run: echo ${{ env.cversion }}
+      run: echo "cversion={$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)}" >> $GITHUB_ENV
 
     - name: Compute new version
       id: bump_version
