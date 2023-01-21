@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-import java.util.List;
 
 @RequestMapping("v1/absences/")
 @AllArgsConstructor
@@ -60,15 +59,17 @@ public class AbsencesControllerImpl implements AbsencesController{
         try {
             service.rollbackDeclaredAbsence(input.user_id(), input.absenceDate(), token);
             return Mono.empty();
-        } catch (UserNotFound e) {
-            val exception = new NotFoundResponse(e.getMessage());
-            return Mono.just(new ResponseEntity<>(exception, HttpStatus.NOT_FOUND));
         } catch (CannotDeclareAbsenceException e) {
             val exception = new BadRequestResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        } catch (UserNotFound e) {
+            val exception = new NotFoundResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.NOT_FOUND));
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
         }
     }
+
+
 }

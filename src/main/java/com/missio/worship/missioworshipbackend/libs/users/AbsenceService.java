@@ -28,7 +28,7 @@ public class AbsenceService {
 
     private final AbsencesRepository repository;
 
-    public List<Absence> getAbsencesPerUserAndDate(final Integer userId, final Date begin, final Date end, final String token) throws InvalidProvidedToken, UserNotFound {
+    public List<Absence> getAbsencesPerUserAndDate(final Integer userId, final Date begin, final Date end, final String token) throws InvalidProvidedToken {
         authorizationChecker.doTokenVerification(token);
         return repository.findAllByUserAndAbsenceDate(userId, begin, end);
     }
