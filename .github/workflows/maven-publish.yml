@@ -38,8 +38,6 @@ jobs:
 
     - name: Commit changes
       shell: bash
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.email "aaron@mbotton.com"
         git config --global user.name "Cloud Automation"
