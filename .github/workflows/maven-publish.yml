@@ -15,6 +15,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+        fetch-depth: 0
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
@@ -36,14 +39,13 @@ jobs:
     - name: Write new version
       run: mvn versions:set -DnewVersion=${{ steps.bump_version.outputs.next-version }} -DprocessAllModules=true
 
-    - name: Commit changes
-      shell: bash
-      run: |
-        git config --global user.email "aaron@mbotton.com"
-        git config --global user.name "Cloud Automation"
-        git add pom.xml
-        git commit -m 'chore: [auto] Update ${{ env.cversion }} image version to ${{ steps.bump_version.outputs.next-version }}'
-        git push
+    - name: Commit & Push changes
+      uses: actions-js/push@master
+      with:
+        author_email: 'aaron@mbotton.com'
+        author_name: 'Cloud Automation'
+        message: 'chore: [auto] Update ${{ env.cversion }} image version to ${{ steps.bump_version.outputs.next-version }}'
+        github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
