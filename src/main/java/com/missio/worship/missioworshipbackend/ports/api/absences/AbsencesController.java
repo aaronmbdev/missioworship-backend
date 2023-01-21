@@ -66,7 +66,7 @@ public interface AbsencesController {
                             }),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "El nivel de autorización no es adecuado. Solo un admin puede hacer esto si se envía el id de usuario. Si es para uno mismo basta con el token.",
+                            description = "Solo un admin puede cambiar asistencia de alguien que no sea él mismo.",
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -110,7 +110,7 @@ public interface AbsencesController {
                             }),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "El nivel de autorización no es adecuado. Solo un admin puede hacer esto si se envía el id de usuario. Si es para uno mismo basta con el token.",
+                            description = "Solo un admin puede cambiar asistencia de alguien que no sea él mismo.",
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
