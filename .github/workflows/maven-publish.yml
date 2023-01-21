@@ -26,6 +26,9 @@ jobs:
     - name: Get current version
       run: echo "{cversion}={$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)}" >> $GITHUB_ENV
 
+    - name: Test step
+      run: echo ${{ env.cversion }}
+
     - name: Compute new version
       id: bump_version
       uses: christian-draeger/increment-semantic-version@1.0.3
