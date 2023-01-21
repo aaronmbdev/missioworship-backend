@@ -22,10 +22,5 @@ jobs:
           distribution: 'temurin'
           server-id: github
           settings-path: ${{ github.workspace }}
-      - name: Bump Version
-        id: bump
-        uses: nnichols/maven-version-bump-action@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Test branch
         run: mvn -B verify
