@@ -5,9 +5,11 @@ on:
     branches:
       - main
 
+env:
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
 jobs:
   test:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
