@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.missio.worship</groupId>
 	<artifactId>missio-worship-backend</artifactId>
-	<version>0.1.4399</version>
+	<version>0.1.4400</version>
 	<name>MissioWorship Backend</name>
 	<description>MissioWorshipBackend</description>
 	<properties>
