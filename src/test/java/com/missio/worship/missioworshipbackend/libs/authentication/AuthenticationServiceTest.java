@@ -3,6 +3,7 @@ package com.missio.worship.missioworshipbackend.libs.authentication;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.EmailNotFound;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.users.RolesService;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.UserSampler;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRepository;
@@ -32,6 +33,9 @@ class AuthenticationServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    RolesService rolesService;
+
     @InjectMocks
     AuthenticationService service;
 
@@ -60,7 +64,7 @@ class AuthenticationServiceTest {
         assertThat(exception.getMessage()).isEqualTo("El correo myEmail@email.com no está registrado en el sistema. Login no permitido");
     }
 
-    /*@Test
+    @Test
     void loginAttemptSuccessfulTokenIssued() throws EmailNotFound, InvalidProvidedToken {
         val validToken = UUID.randomUUID().toString();
         val responseToken = UUID.randomUUID().toString();
@@ -77,7 +81,7 @@ class AuthenticationServiceTest {
         when(tokenIssuingService.issueToken(any(), any(), any(), any())).thenReturn(responseToken);
         val result = service.validateTokenAndLogin(validToken);
         assertThat(result).isEqualTo(responseToken);
-    }*/
+    }
 
     @Test
     void renewAndInvalidToken() {

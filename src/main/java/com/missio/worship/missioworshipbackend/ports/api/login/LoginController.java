@@ -34,9 +34,9 @@ public interface LoginController {
                             }
                     )
             })
-    Mono<ResponseEntity<String>> loginAttempt(@RequestBody TokenInput token);
+    Mono<ResponseEntity<Object>> loginAttempt(@RequestBody TokenInput token);
 
     @PostMapping("/renew")
     @Operation(summary = "Renueva un token propio siempre que sea válido")
-    Mono<ResponseEntity<String>> renewToken(@RequestBody TokenInput token);
+    Mono<ResponseEntity<Object>> renewToken(@RequestBody TokenInput token);
 }

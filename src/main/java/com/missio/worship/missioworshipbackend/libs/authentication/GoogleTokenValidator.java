@@ -34,7 +34,7 @@ public class GoogleTokenValidator {
                     .email(payload.getEmail())
                     .build();
 
-        } catch (GeneralSecurityException | IOException e) {
+        } catch (IllegalArgumentException | GeneralSecurityException | IOException e) {
             log.info("Se ha intentado verificar un token que no es válido: {}", tokenToValidate, e);
             return emptyValidationResponse;
         }

@@ -6,8 +6,8 @@ import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.AbsenceService;
 import com.missio.worship.missioworshipbackend.libs.users.errors.CannotDeclareAbsenceException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.MissingRequiredException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
-import com.missio.worship.missioworshipbackend.ports.datastore.entities.Absence;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.http.HttpStatus;
@@ -31,6 +31,9 @@ public class AbsencesControllerImpl implements AbsencesController{
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch (MissingRequiredException e) {
+            val exception = new BadRequestResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
         }
     }
 
