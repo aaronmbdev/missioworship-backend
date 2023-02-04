@@ -45,6 +45,11 @@ public class UserService {
                 .build();
     }
 
+    public int getUserIdByEmail(final String email) throws UserNotFound {
+        val user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound(email));
+        return user.getId();
+    }
+
     public UserFullResponse createUser(final String name, final String email, final List<Integer> roles, final String token) throws RolNotFoundException, InvalidProvidedToken, NotAdminException, InvalidRolException, EmailAlreadyRegisteredException {
         doAdminAuthorization(token);
         val validRoles = rolesService.validateListOfRoles(roles);
@@ -74,7 +79,7 @@ public class UserService {
         val decodedToken = doAdminAuthorization(token);
         val user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
         val roles = rolesService.getRolesForUser(id);
-        if(authorizationChecker.userIsAdminOrHimself(roles, user, decodedToken)) {
+        if(!authorizationChecker.userIsAdminOrHimself(roles, user, decodedToken)) {
             throw new CannotDeleteUserException("El usuario a borrar es administrador. Sólo puede borrarse él mismo.");
         }
         userRepository.deleteById(id);
@@ -84,7 +89,7 @@ public class UserService {
         val decodedToken = doAdminAuthorization(token);
         var user = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
         val existingRoles = rolesService.getRolesForUser(id);
-        if(authorizationChecker.userIsAdminOrHimself(existingRoles, user, decodedToken)) {
+        if(!authorizationChecker.userIsAdminOrHimself(existingRoles, user, decodedToken)) {
             throw new CannotDeleteUserException("El usuario a borrar es administrador. Sólo puede borrarse él mismo.");
         }
         if(userCreate.name() != null) user.setName(userCreate.name());

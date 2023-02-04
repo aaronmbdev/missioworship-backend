@@ -32,7 +32,7 @@ class AuthTokenServiceTest {
     @Test
     void tokenIssueTest() {
         var jwt = new AppProperties.JWTConfig();
-        jwt.setSecret("ABC1234");
+        jwt.setSecret("abc123");
 
         when(properties.getJwt()).thenReturn(jwt);
 

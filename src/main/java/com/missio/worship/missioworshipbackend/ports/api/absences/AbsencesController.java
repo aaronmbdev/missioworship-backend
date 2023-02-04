@@ -4,7 +4,6 @@ import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
-import com.missio.worship.missioworshipbackend.ports.datastore.entities.Absence;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
-@Tag(name = "Controlador de auscencias", description = "Control y consulta sobre los días que no están")
+@Tag(name = "Controlador de auscencias", description = "Control y consulta sobre los días que no están. NOTA! Las fechas se introducen en formato yyyy-MM-dd")
 public interface AbsencesController {
 
     @GetMapping()

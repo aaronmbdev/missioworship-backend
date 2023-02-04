@@ -2,6 +2,8 @@ package com.missio.worship.missioworshipbackend.ports.datastore.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 
@@ -24,5 +26,6 @@ public class Absence {
 
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 }

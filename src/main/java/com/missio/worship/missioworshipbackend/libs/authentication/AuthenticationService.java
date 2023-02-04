@@ -2,6 +2,8 @@ package com.missio.worship.missioworshipbackend.libs.authentication;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.EmailNotFound;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.users.RolesService;
+import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRepository;
 import lombok.val;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,13 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
 
-    public AuthenticationService(GoogleTokenValidator googleTokenValidator, AuthTokenService tokenIssuingService, UserRepository userRepository) {
+    private final RolesService rolesService;
+
+    public AuthenticationService(GoogleTokenValidator googleTokenValidator, AuthTokenService tokenIssuingService, UserRepository userRepository, RolesService rolesService) {
         this.googleTokenValidator = googleTokenValidator;
         this.tokenIssuingService = tokenIssuingService;
         this.userRepository = userRepository;
+        this.rolesService = rolesService;
     }
 
     public String validateTokenAndLogin(final String inputToken) throws InvalidProvidedToken, EmailNotFound {
@@ -34,11 +39,16 @@ public class AuthenticationService {
                 () -> new EmailNotFound("El correo "+ email +" no está registrado en el sistema. Login no permitido")
         );
 
+        val roles = rolesService.getRolesForUser(user.getId())
+                .stream()
+                .map(Role::getName)
+                .toList();
+
         return tokenIssuingService.issueToken(
                 user.getName(),
                 user.getEmail(),
                 profile,
-                List.of("hola","hola")
+                roles
         );
 
     }
