@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.missio.worship</groupId>
 	<artifactId>missio-worship-backend</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>MissioWorship Backend</name>
 	<description>MissioWorshipBackend</description>
 	<properties>
@@ -13,6 +13,7 @@
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.coverage.jacoco.xmlReportPaths>
 		</sonar.coverage.jacoco.xmlReportPaths>
+		
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -113,6 +114,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<finalName>${project.artifactId}</finalName>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
