@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,7 +25,23 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
+    - name: Get current version
+      run: echo "cversion=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+
     - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ secrets.ARTIFACT_UPLOAD_TOKEN }}
+
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+    - name: Build docker image
+      run: docker build . --tag ${{secrets.DOCKER_USER}}/missio-backend:${{ env.cversion }}
+
+    - name: Docker push to repo
+      run: docker push ${{secrets.DOCKER_USER}}/missio-backend:${{ env.cversion }}
