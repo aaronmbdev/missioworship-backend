@@ -1,0 +1,37 @@
+version: '3.3'
+services:
+  db:
+    container_name: database
+    image: mysql:8.0-debian
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+
+  backend:
+    container_name: backend
+    depends_on:
+      db:
+        condition: service_healthy
+    image: aaronmbdev/missio-backend:1.1.0
+    restart: always
+    environment:
+      MYSQL_URL: "jdbc:mysql://database:3306/db"
+      MYSQL_USERNAME: "user"
+      MYSQL_PASSWORD: "password"
+      CAPTCHA_SECRET: "randomSecretPassword"
+      JWT_SECRET: "randomSecretPassword"
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
