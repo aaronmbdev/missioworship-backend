@@ -2,7 +2,6 @@ package com.missio.worship.missioworshipbackend.libs.authentication;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -14,6 +13,7 @@ public class MissioValidationResponse {
     private String name;
     private String email;
     private String profilePicUrl;
+    private Integer clearanceLevel;
     private List<String> roles;
 
     @Override
@@ -24,6 +24,7 @@ public class MissioValidationResponse {
         return isValid == newResponse.isValid &&
                 name.equals(newResponse.name) &&
                 email.equals(newResponse.email) &&
+                clearanceLevel.equals(newResponse.clearanceLevel) &&
                 profilePicUrl.equals(newResponse.profilePicUrl);
     }
 }

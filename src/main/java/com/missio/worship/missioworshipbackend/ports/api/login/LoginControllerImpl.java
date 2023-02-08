@@ -38,7 +38,7 @@ public class LoginControllerImpl implements LoginController {
             val token = service.validateTokenAndRenew(input.token());
             return Mono.just(ResponseEntity.ok(token));
 
-        } catch (InvalidProvidedToken e) {
+        } catch (InvalidProvidedToken | EmailNotFound e) {
             return Mono.just(ResponseEntity.badRequest()
                     .body(new BadRequestResponse(e.getMessage())));
         }

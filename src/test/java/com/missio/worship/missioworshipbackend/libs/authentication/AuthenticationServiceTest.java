@@ -78,7 +78,7 @@ class AuthenticationServiceTest {
                 .build());
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(userSample));
-        when(tokenIssuingService.issueToken(any(), any(), any(), any())).thenReturn(responseToken);
+        when(tokenIssuingService.issueToken(any(), any(), any(), any(), any())).thenReturn(responseToken);
         val result = service.validateTokenAndLogin(validToken);
         assertThat(result).isEqualTo(responseToken);
     }
