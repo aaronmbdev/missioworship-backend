@@ -32,12 +32,14 @@ public class RolesService {
 
     private final AuthorizationChecker authorizationChecker;
 
-    public Role createRole(@NonNull final String name, final String token) throws InvalidProvidedToken, NotAdminException, RoleAlreadyExistsException {
+    public Role createRole(@NonNull final String name, final Integer clearance, final String token)
+            throws InvalidProvidedToken, NotAdminException, RoleAlreadyExistsException {
         checkAdminAuthOrDie(token);
         log.info("Service tries to create a rol with name '{}'",name);
         if(rolExists(name)) throw new RoleAlreadyExistsException(name);
         var role = new Role();
         role.setName(name);
+        role.setClearance(clearance);
         return rolesRepository.save(role);
     }
 

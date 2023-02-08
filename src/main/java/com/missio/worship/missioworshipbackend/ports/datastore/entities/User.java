@@ -2,9 +2,6 @@ package com.missio.worship.missioworshipbackend.ports.datastore.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.checkerframework.common.aliasing.qual.Unique;
-
-import java.util.Set;
 
 @ToString
 @Getter
@@ -18,9 +15,8 @@ public class User {
     @Column(nullable = false, name = "name")
     @NonNull
     private String name;
-    @Column(nullable = false, name = "email")
+    @Column(nullable = false, name = "email", unique = true)
     @NonNull
-    @Unique
     private String email;
 
 }

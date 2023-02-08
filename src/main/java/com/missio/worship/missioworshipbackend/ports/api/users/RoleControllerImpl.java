@@ -44,7 +44,7 @@ public class RoleControllerImpl implements RoleController {
     public Mono<ResponseEntity<Object>> createRole(RoleCreate roleCreate, String bearerToken) {
         try {
             log.info("Controller tries to create a controller with '{}'",roleCreate);
-            val role = service.createRole(roleCreate.name(), bearerToken);
+            val role = service.createRole(roleCreate.name(), roleCreate.clearanceLevel(), bearerToken);
             return Mono.just(new ResponseEntity<>(role, HttpStatus.CREATED));
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());

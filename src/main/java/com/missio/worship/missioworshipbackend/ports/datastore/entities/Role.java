@@ -21,4 +21,7 @@ public class Role {
     @NonNull
     private String name;
 
+    @Column(nullable = false, name = "clearanceLevel")
+    private Integer clearance;
+
 }
