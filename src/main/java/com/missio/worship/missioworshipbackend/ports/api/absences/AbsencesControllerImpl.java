@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @RequestMapping("v1/absences/")
 @AllArgsConstructor
 @RestController
@@ -24,15 +28,22 @@ public class AbsencesControllerImpl implements AbsencesController{
     private final AbsenceService service;
 
     @Override
-    public Mono<ResponseEntity<Object>> getAbsencesPerDate(AbsenceQueryInput input, String token) {
+    public Mono<ResponseEntity<Object>> getAbsencesPerDate(Integer userId, String begin, String end, String bearerToken) {
         try {
-             val response = service.getAbsencesPerUserAndDate(input.userId(), input.begin(), input.end(), token);
-             return Mono.just(ResponseEntity.ok(response));
+            val datePattern = "yyyy-MM-dd";
+            val beginDate = new SimpleDateFormat(datePattern).parse(begin);
+            val endDate = new SimpleDateFormat(datePattern).parse(end);
+            val response = service.getAbsencesPerUserAndDate(userId, beginDate, endDate, bearerToken);
+            return Mono.just(ResponseEntity.ok(response));
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
         } catch (MissingRequiredException e) {
             val exception = new BadRequestResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        } catch (ParseException e) {
+            val exception = new BadRequestResponse("Error! Las fechas introducidas no tienen un formato " +
+                    "aceptable. Deben cumplir con el formato yyyy-MM-dd");
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
         }
     }

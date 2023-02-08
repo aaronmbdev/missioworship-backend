@@ -33,9 +33,6 @@ public class AbsenceService {
 
     public List<String> getAbsencesPerUserAndDate(final Integer userId, final Date begin, final Date end, final String token) throws InvalidProvidedToken, MissingRequiredException {
         log.info("Intentando ver ausencias de usuario {} entre fechas {} y {}", userId, begin, end);
-        if (begin == null || end == null) {
-            throw new MissingRequiredException("El formato de las fechas introducidas es incorrecto");
-        }
         if (begin.after(end)) {
             throw new MissingRequiredException("La fecha de finalización tiene que ser posterior a la fecha de inicio");
         }
