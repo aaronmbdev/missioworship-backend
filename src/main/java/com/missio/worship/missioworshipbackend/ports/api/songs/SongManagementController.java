@@ -19,6 +19,29 @@ import reactor.core.publisher.Mono;
 @Tag(name = "Controlador de canciones", description = "Endpoints para interactuar con canciones del sistema")
 public interface SongManagementController {
 
+    @GetMapping("rithms")
+    @Operation(summary = "Obtener posibles ritmos.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Información obtenida correctamente",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = Song.class))
+                            }),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No se ha enviado el token de sesión o ha caducado",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = UnauthorizedResponse.class))
+                            })
+            })
+    Mono<ResponseEntity<Object>> getRithms(@RequestHeader(value = "Authorization", required = false) String bearerToken);
+
     @GetMapping()
     @Operation(summary = "Obtener todas las canciones de forma paginada.")
     @ApiResponses(
