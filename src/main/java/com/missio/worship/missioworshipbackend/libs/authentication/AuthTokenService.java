@@ -24,12 +24,17 @@ public class AuthTokenService {
         this.issuer = "MissioSantCugat";
     }
 
-    public String issueToken(String name, String email, String profilePicUrl, List<String> roles) {
+    public String issueToken(String name,
+                             String email,
+                             String profilePicUrl,
+                             List<String> roles,
+                             Integer clearanceLevel) {
         return JWT.create()
                 .withClaim("name", name)
                 .withClaim("email", email)
                 .withClaim("profilePicUrl", profilePicUrl)
                 .withClaim("roles", roles)
+                .withClaim("clearanceLevel", clearanceLevel)
                 .withIssuedAt(new Date())
                 .withIssuer(this.issuer)
                 .withExpiresAt(new Date(System.currentTimeMillis() + ONE_DAY))
@@ -52,6 +57,7 @@ public class AuthTokenService {
                     .profilePicUrl(decoded.getClaim("profilePicUrl").asString())
                     .name(decoded.getClaim("name").asString())
                     .roles(decoded.getClaim("roles").asList(String.class))
+                    .clearanceLevel(decoded.getClaim("clearanceLevel").asInt())
                     .build();
 
         } catch (JWTVerificationException e) {

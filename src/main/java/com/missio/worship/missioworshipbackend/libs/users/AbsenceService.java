@@ -25,8 +25,6 @@ public class AbsenceService {
 
     private final UserService userService;
 
-    private final RolesService rolesService;
-
     private final AuthorizationChecker authorizationChecker;
 
     private final AbsencesRepository repository;
@@ -51,8 +49,7 @@ public class AbsenceService {
             userId = userService.getUserIdByEmail(decodedToken.getEmail());
         }
         val user = userService.getUser(userId);
-        val roles = rolesService.getRolesForUser(userId);
-        if(!authorizationChecker.userIsAdminOrHimself(roles, user, decodedToken)) {
+        if(!authorizationChecker.userIsAdminOrHimself(user, decodedToken)) {
             throw new CannotDeclareAbsenceException("Para declarar ausencia de otro miembro debe ser administrador.");
         }
         if(!absenceExists(user, date)) {
@@ -69,8 +66,7 @@ public class AbsenceService {
             userId = userService.getUserIdByEmail(decodedToken.getEmail());
         }
         val user = userService.getUser(userId);
-        val roles = rolesService.getRolesForUser(userId);
-        if(!authorizationChecker.userIsAdminOrHimself(roles, user, decodedToken)) {
+        if(!authorizationChecker.userIsAdminOrHimself(user, decodedToken)) {
             throw new CannotDeclareAbsenceException("Para anular la ausencia de otro miembro debe ser administrador.");
         }
         repository.deleteByUserAndAbsenceDate(user, date);

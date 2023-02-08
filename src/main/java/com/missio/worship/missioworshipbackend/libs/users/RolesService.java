@@ -3,6 +3,7 @@ package com.missio.worship.missioworshipbackend.libs.users;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.InvalidRolException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.MissingRequiredException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.RolNotFoundException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.RoleAlreadyExistsException;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
@@ -32,12 +33,18 @@ public class RolesService {
 
     private final AuthorizationChecker authorizationChecker;
 
-    public Role createRole(@NonNull final String name, final String token) throws InvalidProvidedToken, NotAdminException, RoleAlreadyExistsException {
+    public Role createRole(final String name, Integer clearance, final String token)
+            throws InvalidProvidedToken, NotAdminException, RoleAlreadyExistsException, MissingRequiredException {
         checkAdminAuthOrDie(token);
-        log.info("Service tries to create a rol with name '{}'",name);
+        log.info("Service tries to create a rol with name '{}'", name);
+        if(name == null) {
+            throw new MissingRequiredException("Error. Se ha intentado crear un rol sin nombre");
+        }
+        if(clearance == null) clearance = 0;
         if(rolExists(name)) throw new RoleAlreadyExistsException(name);
         var role = new Role();
         role.setName(name);
+        role.setClearance(clearance);
         return rolesRepository.save(role);
     }
 
