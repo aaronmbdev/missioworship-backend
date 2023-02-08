@@ -23,7 +23,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    image: aaronmbdev/missio-backend:1.1.0
+    image: aaronmbdev/missio-backend:1.1.1
     restart: always
     environment:
       MYSQL_URL: "jdbc:mysql://database:3306/db"
