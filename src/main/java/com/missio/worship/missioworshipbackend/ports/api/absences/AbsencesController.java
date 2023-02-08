@@ -12,11 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+
+import java.util.Date;
 
 @Tag(name = "Controlador de auscencias", description = "Control y consulta sobre los días que no están. NOTA! Las fechas se introducen en formato yyyy-MM-dd")
 public interface AbsencesController {
@@ -45,7 +44,10 @@ public interface AbsencesController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> getAbsencesPerDate(@RequestBody AbsenceQueryInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> getAbsencesPerDate(@RequestParam Integer userId,
+                                                    @RequestParam String begin,
+                                                    @RequestParam String end,
+                                                    @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @PostMapping("absent")
     @Operation(summary = "Declara la no asistencia de un usuario para una fecha. Si no contiene id de usuario usa el del token. Si incluye id de usuario, el token debe ser de administrador.")
