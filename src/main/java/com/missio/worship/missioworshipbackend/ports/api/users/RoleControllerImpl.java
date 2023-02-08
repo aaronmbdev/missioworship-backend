@@ -7,6 +7,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.users.RolesService;
+import com.missio.worship.missioworshipbackend.libs.users.errors.MissingRequiredException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.RoleAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +53,7 @@ public class RoleControllerImpl implements RoleController {
         } catch (NotAdminException e) {
             val exception = new ForbiddenResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.FORBIDDEN));
-        } catch (RoleAlreadyExistsException e) {
+        } catch (RoleAlreadyExistsException | MissingRequiredException e) {
             val exception = new BadRequestResponse(e.getMessage());
             return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
         }

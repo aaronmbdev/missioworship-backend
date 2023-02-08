@@ -16,7 +16,8 @@ import java.util.Date;
 @Table(name = "absence")
 public class Absence {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "absence_sequence")
+    @SequenceGenerator(name = "absence_sequence", sequenceName = "absence_sequence", allocationSize = 1)
     private Integer id;
 
     @Temporal(TemporalType.DATE)
