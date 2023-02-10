@@ -14,7 +14,8 @@ import org.hibernate.annotations.OnDeleteAction;
 @Table(name = "user_roles")
 public class UserRoles {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_roles_sequence")
+    @SequenceGenerator(name = "user_roles_sequence", sequenceName = "user_roles_sequence", allocationSize = 1)
     Integer id;
 
     @ManyToOne

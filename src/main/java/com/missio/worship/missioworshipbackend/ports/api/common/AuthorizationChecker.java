@@ -20,18 +20,15 @@ import java.util.List;
 public class AuthorizationChecker {
     private final AuthTokenService tokenService;
 
-    private final AppProperties properties;
 
-
-    public boolean userIsAdminOrHimself(List<Role> roles, final User user, final MissioValidationResponse decodedToken) {
-        val isAdmin = roles.stream()
-                .anyMatch(role -> role.getName().equals(properties.getAdminRole()));
+    public boolean userIsAdminOrHimself(final User user, final MissioValidationResponse decodedToken) {
+        val isAdmin = verifyTokenAndAdmin(decodedToken);
         val myself = decodedToken.getEmail().equals(user.getEmail());
         return isAdmin || myself;
     }
 
     public boolean verifyTokenAndAdmin(MissioValidationResponse decodedToken)  {
-        return decodedToken.getRoles().contains(this.properties.getAdminRole());
+        return decodedToken.getClearanceLevel() >= 2;
     }
 
     public MissioValidationResponse doTokenVerification(String token) throws InvalidProvidedToken {

@@ -78,7 +78,7 @@ class AuthTokenServiceTest {
         jwt.setSecret("ABC1234");
         when(properties.getJwt()).thenReturn(jwt);
 
-        val token = service.issueToken(name, email, url, roles);
+        val token = service.issueToken(name, email, url, roles, 2);
         log.info("Test '{}'",token);
         val result = service.verifyTokenValidity(token, new Date().toInstant());
         assertThat(result.isValid()).isTrue();
@@ -86,10 +86,11 @@ class AuthTokenServiceTest {
         assertThat(result.getEmail()).isEqualTo(email);
         assertThat(result.getProfilePicUrl()).isEqualTo(url);
         assertThat(result.getRoles()).isEqualTo(roles);
+        assertThat(result.getClearanceLevel()).isEqualTo(2);
     }
 
     private String generateValidToken() {
-        val token = service.issueToken("aaron", "test@email.com", "http://test.com", List.of("One", "Two"));
+        val token = service.issueToken("aaron", "test@email.com", "http://test.com", List.of("One", "Two"), 2);
         log.info("TOKEN REQUESTED: {}", token);
         return token;
     }
