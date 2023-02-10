@@ -1,6 +1,7 @@
 package com.missio.worship.missioworshipbackend.ports.datastore.entities;
 
 import com.missio.worship.missioworshipbackend.libs.enums.SongRithm;
+import com.missio.worship.missioworshipbackend.ports.api.songs.SongInput;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,18 @@ import java.util.Date;
 @Entity
 @Table(name = "songs")
 public class Song {
+
+    public Song(final SongInput input) {
+        this.setActive(input.active());
+        this.setNotes(input.notes());
+        this.setLastSunday(input.lastSunday());
+        this.setRithm(input.rithm());
+        this.setName(input.name());
+        this.setArtist(input.artist());
+        this.setLinkToTrack(input.linkToTrack());
+        this.setLinkToYoutube(input.linkToYoutube());
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "song_sequence")
     @SequenceGenerator(name = "song_sequence", sequenceName = "song_sequence", allocationSize = 1)

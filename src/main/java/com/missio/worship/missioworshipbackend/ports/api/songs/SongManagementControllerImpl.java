@@ -1,8 +1,15 @@
 package com.missio.worship.missioworshipbackend.ports.api.songs;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.songs.SongService;
+import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
@@ -47,8 +54,15 @@ public class SongManagementControllerImpl implements SongManagementController {
 
     @Override
     public Mono<ResponseEntity<Object>> createSong(SongInput song, String bearerToken) {
-        return null;
-        //Verificar solamente atributos obligatorios. Si los opcionales no son nulos
-        //verificar que soy administrador.
+        try  {
+            log.info("Se intenta crear una canción con los datos {}", song);
+            var response = service.createSong(song, bearerToken);
+            return Mono.just(ResponseEntity.ok(response));
+        } catch (InvalidProvidedToken e) {
+            val exception = new UnauthorizedResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch (CouldNotCreateSongException e) {
+            return Mono.just(new BadRequestResponse(e.getErrors()).toObjectEntity());
+        }
     }
 }

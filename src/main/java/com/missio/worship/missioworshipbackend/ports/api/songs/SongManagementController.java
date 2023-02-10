@@ -180,7 +180,7 @@ public interface SongManagementController {
                                                    @RequestBody SongInput song,
                                                    @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
-    @PutMapping()
+    @PostMapping()
     @Operation(summary = "Crear una canción nueva")
     @ApiResponses(
             value = {

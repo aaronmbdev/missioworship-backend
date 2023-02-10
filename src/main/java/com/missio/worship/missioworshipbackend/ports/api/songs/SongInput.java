@@ -11,5 +11,5 @@ public record SongInput(String name,
                         String linkToYoutube,
                         Date lastSunday,
                         String notes,
-                        Boolean active) {
+                        boolean active) {
 }
