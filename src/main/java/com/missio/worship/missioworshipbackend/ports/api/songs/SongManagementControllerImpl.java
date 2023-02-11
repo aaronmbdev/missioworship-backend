@@ -1,9 +1,14 @@
 package com.missio.worship.missioworshipbackend.ports.api.songs;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.songs.SongService;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
+import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotUpdateSongException;
+import com.missio.worship.missioworshipbackend.libs.songs.errors.SongDoesNotExistsException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -36,20 +41,42 @@ public class SongManagementControllerImpl implements SongManagementController {
 
     @Override
     public Mono<ResponseEntity<Object>> getSong(Integer id, String bearerToken) {
-        return null;
-        //Obtener información no privada de una cancion
+        try {
+            val song = service.getSongInformation(id, bearerToken);
+            return Mono.just(ResponseEntity.ok(song));
+        } catch (SongDoesNotExistsException e) {
+            return Mono.just(new NotFoundResponse(e.getMessage()).toObjectEntity());
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
+        }
     }
 
     @Override
     public Mono<ResponseEntity<Object>> deleteSong(Integer id, String bearerToken) {
-        return null;
-        //Solo se puede borrar si soy admin
+        try {
+            service.deleteSongFromLib(id, bearerToken);
+            return Mono.empty();
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
+        } catch (NotAdminException e) {
+            return Mono.just(new ForbiddenResponse(e.getMessage()).toObjectEntity());
+        }
     }
 
     @Override
     public Mono<ResponseEntity<Object>> updateSong(Integer id, SongInput song, String bearerToken) {
-        return null;
-        //Solo puedo actualizar si soy admin
+        try {
+            val response = service.updateSong(id, song, bearerToken);
+            return Mono.just(ResponseEntity.ok(response));
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
+        } catch (CouldNotUpdateSongException e) {
+            return Mono.just(new BadRequestResponse(e.getErrors()).toObjectEntity());
+        } catch (SongDoesNotExistsException e) {
+            return Mono.just(new NotFoundResponse(e.getMessage()).toObjectEntity());
+        } catch (NotAdminException e) {
+            return Mono.just(new ForbiddenResponse(e.getMessage()).toObjectEntity());
+        }
     }
 
     @Override
@@ -59,10 +86,11 @@ public class SongManagementControllerImpl implements SongManagementController {
             var response = service.createSong(song, bearerToken);
             return Mono.just(ResponseEntity.ok(response));
         } catch (InvalidProvidedToken e) {
-            val exception = new UnauthorizedResponse(e.getMessage());
-            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
         } catch (CouldNotCreateSongException e) {
             return Mono.just(new BadRequestResponse(e.getErrors()).toObjectEntity());
+        } catch (NotAdminException e) {
+            return Mono.just(new ForbiddenResponse(e.getMessage()).toObjectEntity());
         }
     }
 }
