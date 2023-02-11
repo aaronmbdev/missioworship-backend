@@ -45,11 +45,6 @@ public class UserService {
                 .build();
     }
 
-    public int getUserIdByEmail(final String email) throws UserNotFound {
-        val user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFound(email));
-        return user.getId();
-    }
-
     public UserFullResponse createUser(final String name, final String email, final List<Integer> roles, final String token) throws RolNotFoundException, InvalidProvidedToken, NotAdminException, InvalidRolException, EmailAlreadyRegisteredException {
         doAdminAuthorization(token);
         val validRoles = rolesService.validateListOfRoles(roles);
