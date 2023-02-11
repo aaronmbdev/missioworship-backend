@@ -43,6 +43,7 @@ public class AuthenticationService {
         val roles = getRoleInformationForUser(user.getId());
 
         return tokenIssuingService.issueToken(
+                user.getId(),
                 user.getName(),
                 user.getEmail(),
                 profile,
@@ -60,6 +61,7 @@ public class AuthenticationService {
         val user = getUserInformation(tokenInformation.getEmail());
         val roles = getRoleInformationForUser(user.getId());
         return tokenIssuingService.issueToken(
+                user.getId(),
                 user.getName(),
                 tokenInformation.getEmail(),
                 tokenInformation.getProfilePicUrl(),
