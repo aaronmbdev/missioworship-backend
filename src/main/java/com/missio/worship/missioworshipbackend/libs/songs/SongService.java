@@ -3,9 +3,13 @@ package com.missio.worship.missioworshipbackend.libs.songs;
 import com.missio.worship.missioworshipbackend.libs.authentication.MissioValidationResponse;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
+import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotUpdateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.SongDoesNotExistsException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.LessThanZeroException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.WrongOffsetValueException;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.api.songs.SongInput;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Song;
@@ -29,6 +33,13 @@ public class SongService {
     private final AuthorizationChecker authorizationChecker;
 
     private final SongRepository songRepository;
+
+    public RestPaginationResponse<SongSlim> getAllSongsPaginated(final PaginationInput input, String bearerToken)
+            throws InvalidProvidedToken {
+        authorizationChecker.doTokenVerification(bearerToken);
+        
+        return null;
+    }
 
     public void deleteSongFromLib(final Integer id, final String bearer)
             throws NotAdminException, InvalidProvidedToken {

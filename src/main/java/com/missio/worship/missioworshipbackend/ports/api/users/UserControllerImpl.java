@@ -2,6 +2,7 @@ package com.missio.worship.missioworshipbackend.ports.api.users;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
@@ -99,7 +100,7 @@ public class UserControllerImpl implements UserController {
     @Override
     public Mono<ResponseEntity<Object>> getAllUsers(Integer limit, Integer offset, String bearerToken) {
         try {
-            val pagination = service.getUserList(limit, offset, bearerToken);
+            val pagination = service.getUserList(new PaginationInput(limit, offset), bearerToken);
             return Mono.just(ResponseEntity.ok(pagination));
         } catch (LessThanZeroException | WrongOffsetValueException e) {
             val exception = new BadRequestResponse(e.getMessage());
