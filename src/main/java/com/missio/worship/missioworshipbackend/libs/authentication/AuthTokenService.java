@@ -24,12 +24,14 @@ public class AuthTokenService {
         this.issuer = "MissioSantCugat";
     }
 
-    public String issueToken(String name,
+    public String issueToken(Integer id,
+                             String name,
                              String email,
                              String profilePicUrl,
                              List<String> roles,
                              Integer clearanceLevel) {
         return JWT.create()
+                .withClaim("id", id)
                 .withClaim("name", name)
                 .withClaim("email", email)
                 .withClaim("profilePicUrl", profilePicUrl)
@@ -53,6 +55,7 @@ public class AuthTokenService {
             }
             return MissioValidationResponse.builder()
                     .isValid(true)
+                    .id(decoded.getClaim("id").asInt())
                     .email(decoded.getClaim("email").asString())
                     .profilePicUrl(decoded.getClaim("profilePicUrl").asString())
                     .name(decoded.getClaim("name").asString())

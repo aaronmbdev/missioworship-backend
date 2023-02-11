@@ -10,6 +10,7 @@ import java.util.List;
 public class MissioValidationResponse {
 
     private boolean isValid;
+    private Integer id;
     private String name;
     private String email;
     private String profilePicUrl;

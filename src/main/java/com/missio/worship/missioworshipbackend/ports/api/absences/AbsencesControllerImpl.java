@@ -8,6 +8,7 @@ import com.missio.worship.missioworshipbackend.libs.users.AbsenceService;
 import com.missio.worship.missioworshipbackend.libs.users.errors.CannotDeclareAbsenceException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.MissingRequiredException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
+import com.missio.worship.missioworshipbackend.libs.utils.DateUtils;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -29,9 +29,8 @@ public class AbsencesControllerImpl implements AbsencesController{
     @Override
     public Mono<ResponseEntity<Object>> getAbsencesPerDate(Integer userId, String begin, String end, String bearerToken) {
         try {
-            val datePattern = "yyyy-MM-dd";
-            val beginDate = new SimpleDateFormat(datePattern).parse(begin);
-            val endDate = new SimpleDateFormat(datePattern).parse(end);
+            val beginDate = DateUtils.parseFrom(begin);
+            val endDate = DateUtils.parseFrom(end);
             val response = service.getAbsencesPerUserAndDate(userId, beginDate, endDate, bearerToken);
             return Mono.just(ResponseEntity.ok(response));
         } catch (InvalidProvidedToken e) {

@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.Date;
-
 @Tag(name = "Controlador de auscencias", description = "Control y consulta sobre los días que no están. NOTA! Las fechas se introducen en formato yyyy-MM-dd")
 public interface AbsencesController {
 
@@ -44,7 +42,7 @@ public interface AbsencesController {
                                             schema = @Schema(implementation = NotFoundResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> getAbsencesPerDate(@RequestParam Integer userId,
+    Mono<ResponseEntity<Object>> getAbsencesPerDate(@RequestParam(required = false) Integer userId,
                                                     @RequestParam String begin,
                                                     @RequestParam String end,
                                                     @RequestHeader(value = "Authorization", required = false) String bearerToken);
