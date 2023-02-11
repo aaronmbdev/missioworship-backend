@@ -1,6 +1,7 @@
 package com.missio.worship.missioworshipbackend.ports.api.songs;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
@@ -9,6 +10,8 @@ import com.missio.worship.missioworshipbackend.libs.songs.SongService;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotUpdateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.SongDoesNotExistsException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.LessThanZeroException;
+import com.missio.worship.missioworshipbackend.libs.users.errors.WrongOffsetValueException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -35,8 +38,15 @@ public class SongManagementControllerImpl implements SongManagementController {
 
     @Override
     public Mono<ResponseEntity<Object>> getAllSongs(Integer limit, Integer offset, String bearerToken) {
-        return null;
-        //Obtener listado de canciones registradas de forma paginada.
+        try {
+            val input = new PaginationInput(limit, offset);
+            val response = service.getAllSongsPaginated(input, bearerToken);
+            return Mono.just(ResponseEntity.ok(response));
+        } catch (LessThanZeroException | WrongOffsetValueException e) {
+            return Mono.just(new BadRequestResponse(e.getMessage()).toObjectEntity());
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
+        }
     }
 
     @Override

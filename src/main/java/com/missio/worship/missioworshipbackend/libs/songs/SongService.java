@@ -13,6 +13,7 @@ import com.missio.worship.missioworshipbackend.libs.users.errors.WrongOffsetValu
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.api.songs.SongInput;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Song;
+import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.SongRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,8 +38,16 @@ public class SongService {
     public RestPaginationResponse<SongSlim> getAllSongsPaginated(final PaginationInput input, String bearerToken)
             throws InvalidProvidedToken {
         authorizationChecker.doTokenVerification(bearerToken);
-        
-        return null;
+        val values = songRepository.findAllByPagination(input.getOffset(), input.getLimit())
+                .stream()
+                .map(SongSlim::new)
+                .toList();
+        RestPaginationResponse<SongSlim> response = new RestPaginationResponse<>();
+        response.setValues(values);
+        response.setLimit(input.getLimit());
+        response.setOffset(input.getOffset());
+        response.setNext_offset(input.getNextOffset());
+        return response;
     }
 
     public void deleteSongFromLib(final Integer id, final String bearer)
