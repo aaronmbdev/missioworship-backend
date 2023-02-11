@@ -4,6 +4,7 @@ import com.missio.worship.missioworshipbackend.libs.authentication.errors.Invali
 import com.missio.worship.missioworshipbackend.libs.users.errors.CannotDeclareAbsenceException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.MissingRequiredException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
+import com.missio.worship.missioworshipbackend.libs.utils.DateUtils;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Absence;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
@@ -35,11 +36,9 @@ public class AbsenceService {
             throw new MissingRequiredException("La fecha de finalización tiene que ser posterior a la fecha de inicio");
         }
         authorizationChecker.doTokenVerification(token);
-        val pattern = "yyyy-MM-dd";
-        val simpleDateFormat = new SimpleDateFormat(pattern);
         return repository.findAllByUserAndAbsenceDate(userId, begin, end)
                 .stream()
-                .map(absence -> simpleDateFormat.format(absence.getAbsenceDate()))
+                .map(absence -> DateUtils.parseFrom(absence.getAbsenceDate()))
                 .toList();
     }
 
