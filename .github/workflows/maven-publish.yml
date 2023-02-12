@@ -44,4 +44,4 @@ jobs:
       run: docker build . --tag ${{secrets.DOCKER_USER}}/missio-backend:${{ env.cversion }} --tag ${{secrets.DOCKER_USER}}/missio-backend:dev
 
     - name: Docker push to repo
-      run: docker push --all-tags
+      run: docker push ${{secrets.DOCKER_USER}}/missio-backend --all-tags
