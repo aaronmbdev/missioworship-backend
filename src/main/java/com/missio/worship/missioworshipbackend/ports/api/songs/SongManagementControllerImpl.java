@@ -35,8 +35,11 @@ public class SongManagementControllerImpl implements SongManagementController {
 
     @Override
     public Mono<ResponseEntity<Object>> getRithms(String bearerToken) {
-        return null;
-        //Retornar listado de ritmos disponibles sin paginar.
+        try {
+            return Mono.just(ResponseEntity.ok(service.getAllRithms(bearerToken)));
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
+        }
     }
 
     @Override

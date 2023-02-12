@@ -6,6 +6,7 @@ import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdm
 import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
 import com.missio.worship.missioworshipbackend.libs.common.SongPaginationInput;
+import com.missio.worship.missioworshipbackend.libs.enums.SongRithm;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotUpdateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.SongDoesNotExistsException;
@@ -36,7 +37,15 @@ public class SongService {
 
     private final SongRepository songRepository;
 
-    public RestPaginationResponse<SongSlim> getAllSongsPaginated(final SongPaginationInput input, String bearerToken)
+    public List<SongRithm> getAllRithms(final String bearerToken) throws InvalidProvidedToken {
+        authorizationChecker.doTokenVerification(bearerToken);
+        return List.of(
+                SongRithm.LENTA,
+                SongRithm.RAPIDA
+        );
+    }
+
+    public RestPaginationResponse<SongSlim> getAllSongsPaginated(final SongPaginationInput input, final String bearerToken)
             throws InvalidProvidedToken {
         log.info("Intentando obtener paginación de canciones con los siguientes datos {}", input);
         authorizationChecker.doTokenVerification(bearerToken);
