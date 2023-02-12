@@ -17,14 +17,15 @@ import java.util.Date;
 public class Song {
 
     public Song(final SongInput input) {
-        this.setActive(input.active());
-        this.setNotes(input.notes());
-        this.setLastSunday(input.lastSunday());
-        this.setRithm(input.rithm());
-        this.setName(input.name());
-        this.setArtist(input.artist());
-        this.setLinkToTrack(input.linkToTrack());
-        this.setLinkToYoutube(input.linkToYoutube());
+        active = input.active();
+        notes = input.notes();
+        lastSunday = input.lastSunday();
+        rithm = input.rithm();
+        name = input.name();
+        artist = input.artist();
+        linkToTrack = input.linkToTrack();
+        linkToYoutube = input.linkToYoutube();
+        this.creationDate = new Date();
     }
 
     @Id
@@ -54,6 +55,9 @@ public class Song {
 
     @Column(name = "lastSunday")
     private Date lastSunday;
+
+    @Column(name = "creationDate")
+    private Date creationDate;
 
     @Column(name = "notes")
     private String notes;

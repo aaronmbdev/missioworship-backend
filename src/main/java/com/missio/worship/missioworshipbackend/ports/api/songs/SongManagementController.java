@@ -63,9 +63,15 @@ public interface SongManagementController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> getAllSongs(@Parameter(description = "Cantidad de elementos por página. Minimo 0") Integer limit,
-                                                    @Parameter(description = "Cantidad de elementos a omitir. Se calcula como offset_anterior + limit. Debe ser múltiplo de limit") Integer offset,
-                                                    @RequestHeader(value = "Authorization", required = false) String bearerToken);
+    Mono<ResponseEntity<Object>> getAllSongs(
+            @Parameter(description = "Cantidad de elementos por página. Minimo 0") Integer limit,
+            @Parameter(description = "Cantidad de elementos a omitir. Se calcula como offset_anterior " +
+                    "+ limit. Debe ser múltiplo de limit") Integer offset,
+            @Parameter(description = "Filtro de fecha. Permite ver las últimas tocadas o las últimas creadas." +
+                    " El valor puede ser created o played") String dateFilter,
+            @Parameter(description = "Filtro de canciones activas, permite ver todas, solo activas o solo propuestas. " +
+                    "El valor puede ser all, active, unactive") String activeFilter,
+            @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @GetMapping("{id}")
     @Operation(summary = "Obtener información de una canción.")

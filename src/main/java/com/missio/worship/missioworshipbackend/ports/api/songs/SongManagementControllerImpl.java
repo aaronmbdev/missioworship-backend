@@ -2,6 +2,7 @@ package com.missio.worship.missioworshipbackend.ports.api.songs;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
+import com.missio.worship.missioworshipbackend.libs.common.SongPaginationInput;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
@@ -37,9 +38,13 @@ public class SongManagementControllerImpl implements SongManagementController {
     }
 
     @Override
-    public Mono<ResponseEntity<Object>> getAllSongs(Integer limit, Integer offset, String bearerToken) {
+    public Mono<ResponseEntity<Object>> getAllSongs(Integer limit,
+                                                    Integer offset,
+                                                    String dateFilter,
+                                                    String activeFilter,
+                                                    String bearerToken) {
         try {
-            val input = new PaginationInput(limit, offset);
+            val input = new SongPaginationInput(limit, offset);
             val response = service.getAllSongsPaginated(input, bearerToken);
             return Mono.just(ResponseEntity.ok(response));
         } catch (LessThanZeroException | WrongOffsetValueException e) {
