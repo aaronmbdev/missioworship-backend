@@ -5,6 +5,7 @@ import com.missio.worship.missioworshipbackend.libs.authentication.errors.Invali
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
+import com.missio.worship.missioworshipbackend.libs.common.SongPaginationInput;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotUpdateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.SongDoesNotExistsException;
@@ -35,13 +36,29 @@ public class SongService {
 
     private final SongRepository songRepository;
 
-    public RestPaginationResponse<SongSlim> getAllSongsPaginated(final PaginationInput input, String bearerToken)
+    public RestPaginationResponse<SongSlim> getAllSongsPaginated(final SongPaginationInput input, String bearerToken)
             throws InvalidProvidedToken {
+        log.info("Intentando obtener paginación de canciones con los siguientes datos {}", input);
         authorizationChecker.doTokenVerification(bearerToken);
-        val values = songRepository.findAllByPagination(input.getOffset(), input.getLimit())
+        List<SongSlim> values;
+        values = songRepository.findAllByPagination(input.getOrderClause(), input.getLimit(), input.getOffset())
                 .stream()
                 .map(SongSlim::new)
                 .toList();
+        if (input.getWhereActive().equals("active")) {
+            values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), true)
+                    .stream()
+                    .map(SongSlim::new)
+                    .toList();
+        }
+
+        if(input.getWhereActive().equals("unactive")) {
+            values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), false)
+                    .stream()
+                    .map(SongSlim::new)
+                    .toList();
+        }
+
         RestPaginationResponse<SongSlim> response = new RestPaginationResponse<>();
         response.setValues(values);
         response.setLimit(input.getLimit());

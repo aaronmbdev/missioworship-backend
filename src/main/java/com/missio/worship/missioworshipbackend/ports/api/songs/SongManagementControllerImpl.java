@@ -1,6 +1,7 @@
 package com.missio.worship.missioworshipbackend.ports.api.songs;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.common.InvalidActiveFilterException;
 import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
 import com.missio.worship.missioworshipbackend.libs.common.SongPaginationInput;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
@@ -10,6 +11,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.songs.SongService;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotCreateSongException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.CouldNotUpdateSongException;
+import com.missio.worship.missioworshipbackend.libs.songs.errors.InvalidDateFilterException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.SongDoesNotExistsException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.LessThanZeroException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.WrongOffsetValueException;
@@ -44,10 +46,10 @@ public class SongManagementControllerImpl implements SongManagementController {
                                                     String activeFilter,
                                                     String bearerToken) {
         try {
-            val input = new SongPaginationInput(limit, offset);
+            val input = new SongPaginationInput(limit, offset, dateFilter, activeFilter);
             val response = service.getAllSongsPaginated(input, bearerToken);
             return Mono.just(ResponseEntity.ok(response));
-        } catch (LessThanZeroException | WrongOffsetValueException e) {
+        } catch (LessThanZeroException | WrongOffsetValueException | InvalidDateFilterException | InvalidActiveFilterException e) {
             return Mono.just(new BadRequestResponse(e.getMessage()).toObjectEntity());
         } catch (InvalidProvidedToken e) {
             return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());

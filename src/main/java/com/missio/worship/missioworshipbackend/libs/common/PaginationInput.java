@@ -11,8 +11,6 @@ public class PaginationInput {
     private final int offset;
     private final int nextOffset;
 
-    private String limitClause;
-
     public PaginationInput(Integer limit, Integer offset)
             throws WrongOffsetValueException, LessThanZeroException {
         if (limit == null) limit = 0;
@@ -22,10 +20,5 @@ public class PaginationInput {
         this.limit = limit;
         this.offset = offset;
         this.nextOffset = limit + offset;
-        computeLimitClause();
-    }
-
-    private void computeLimitClause() {
-        this.limitClause = "ORDER BY id LIMIT " + getLimit() + " , " + getOffset();
     }
 }

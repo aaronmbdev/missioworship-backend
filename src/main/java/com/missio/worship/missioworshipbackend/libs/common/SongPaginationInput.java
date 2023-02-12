@@ -4,10 +4,13 @@ import com.missio.worship.missioworshipbackend.libs.songs.errors.InvalidDateFilt
 import com.missio.worship.missioworshipbackend.libs.users.errors.LessThanZeroException;
 import com.missio.worship.missioworshipbackend.libs.users.errors.WrongOffsetValueException;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Slf4j
 public class SongPaginationInput extends PaginationInput {
-    private String WHERE_CLAUSE, ORDER_CLAUSE;
+    private String whereActive;
+    private String orderClause;
     public SongPaginationInput(Integer limit, Integer offset) throws WrongOffsetValueException, LessThanZeroException {
         super(limit, offset);
     }
@@ -15,31 +18,30 @@ public class SongPaginationInput extends PaginationInput {
     public SongPaginationInput(Integer limit, Integer offset, String dateFilter, String activeFilter)
             throws LessThanZeroException, WrongOffsetValueException, InvalidDateFilterException, InvalidActiveFilterException {
         super(limit, offset);
+        if(dateFilter == null) {
+            dateFilter = "created";
+        }
+        if(activeFilter == null) {
+            activeFilter = "all";
+        }
         if (!dateFilter.equals("created") && !dateFilter.equals("played")) {
             throw new InvalidDateFilterException(dateFilter);
         }
         if (!activeFilter.equals("all") && !activeFilter.equals("active") && !activeFilter.equals("unactive")) {
             throw new InvalidActiveFilterException(activeFilter);
         }
+        this.whereActive = activeFilter;
         computeOrderClause(dateFilter);
-        computeWhereClause(activeFilter);
     }
 
     private void computeOrderClause(final String filter) {
-        String column = "creationDate";
+        String column = "creation_date";
         if (filter.equals("played")) column = "lastSunday";
-        this.ORDER_CLAUSE = "ORDER BY " + column + " DESC";
+        this.orderClause = column;
     }
 
-    private void computeWhereClause(final String filter) {
-        if (filter.equals("active")) {
-            this.WHERE_CLAUSE = "WHERE active";
-        }
-        if (filter.equals("unactive")) {
-            this.WHERE_CLAUSE = "WHERE NOT active";
-        }
-        if (filter.equals("all")) {
-            this.WHERE_CLAUSE = "";
-        }
+    public String toString() {
+        return "[PaginationInput limit='" + this.getLimit() +"', offset='" + this.getOffset() +
+                "', whereClause='" + this.getWhereActive() + "', orderClause='" + this.getOrderClause() + "']";
     }
 }

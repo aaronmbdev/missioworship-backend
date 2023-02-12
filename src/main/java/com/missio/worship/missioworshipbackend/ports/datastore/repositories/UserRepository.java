@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
 
-    @Query(value="SELECT * FROM users ?1", nativeQuery = true)
-    public List<User> findAllByPagination(String query);
+    @Query(value="SELECT * FROM users ORDER BY id LIMIT ?1, ?2", nativeQuery = true)
+    public List<User> findAllByPagination(int limit, int offset);
 }
