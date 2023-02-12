@@ -1,6 +1,7 @@
 package com.missio.worship.missioworshipbackend.libs.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

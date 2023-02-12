@@ -3,6 +3,7 @@ package com.missio.worship.missioworshipbackend.libs.users;
 import com.missio.worship.missioworshipbackend.libs.authentication.MissioValidationResponse;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
+import com.missio.worship.missioworshipbackend.libs.common.PaginationInput;
 import com.missio.worship.missioworshipbackend.libs.common.RestPaginationResponse;
 import com.missio.worship.missioworshipbackend.libs.users.errors.*;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
@@ -102,18 +103,15 @@ public class UserService {
                 .build();
     }
 
-    public RestPaginationResponse<User> getUserList(Integer limit, Integer offset, String bearerToken) throws InvalidProvidedToken, LessThanZeroException, WrongOffsetValueException {
+    public RestPaginationResponse<User> getUserList(final PaginationInput input, String bearerToken)
+            throws InvalidProvidedToken, LessThanZeroException, WrongOffsetValueException {
         authorizationChecker.doTokenVerification(bearerToken);
-        if (limit == null) limit = 0;
-        if (offset == null) offset = 0;
-        if (limit < 0 || offset < 0) throw new LessThanZeroException();
-        if (limit != 0 && offset % limit != 0) throw new WrongOffsetValueException();
-        val values = userRepository.findAllByPagination(offset, limit);
+        val values = userRepository.findAllByPagination(input.getLimit(), input.getOffset());
         RestPaginationResponse<User> response = new RestPaginationResponse<>();
         response.setValues(values);
-        response.setLimit(limit);
-        response.setOffset(offset);
-        response.setNext_offset(limit + offset);
+        response.setLimit(input.getLimit());
+        response.setOffset(input.getOffset());
+        response.setNext_offset(input.getNextOffset());
         return response;
     }
 
