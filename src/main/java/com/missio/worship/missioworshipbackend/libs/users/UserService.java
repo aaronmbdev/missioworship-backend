@@ -106,7 +106,7 @@ public class UserService {
     public RestPaginationResponse<User> getUserList(final PaginationInput input, String bearerToken)
             throws InvalidProvidedToken, LessThanZeroException, WrongOffsetValueException {
         authorizationChecker.doTokenVerification(bearerToken);
-        val values = userRepository.findAllByPagination(input.getOffset(), input.getLimit());
+        val values = userRepository.findAllByPagination(input.getLimitClause());
         RestPaginationResponse<User> response = new RestPaginationResponse<>();
         response.setValues(values);
         response.setLimit(input.getLimit());
