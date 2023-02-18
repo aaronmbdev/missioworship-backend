@@ -5,6 +5,7 @@ import com.missio.worship.missioworshipbackend.libs.authentication.errors.Invali
 import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
+import com.missio.worship.missioworshipbackend.ports.datastore.entities.RoleSampler;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRepository;
 import lombok.val;
@@ -51,7 +52,7 @@ class UserServiceTest {
         );
         when(userRepository.findById(user_id)).thenReturn(Optional.of(user));
         when(rolesService.getRolesForUser(user_id)).thenReturn(
-                List.of(new Role("Test"), new Role("Test2"))
+                List.of(RoleSampler.sample(), RoleSampler.sample())
         );
         val response = service.getUser(user_id, token);
         assertThat(expectedResponse).isEqualTo(response);

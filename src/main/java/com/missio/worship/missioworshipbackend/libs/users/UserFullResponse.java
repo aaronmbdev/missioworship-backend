@@ -31,11 +31,11 @@ public class UserFullResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserFullResponse that = (UserFullResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(roles, that.roles);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, roles);
+        return Objects.hash(id, name, email);
     }
 }
