@@ -106,7 +106,8 @@ public interface UserController {
                             description = "Información obtenida correctamente",
                             content = {
                                     @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE)
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = RestPaginationResponse.class))
                             }),
                     @ApiResponse(
                             responseCode = "401",
