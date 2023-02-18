@@ -5,7 +5,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
-import com.missio.worship.missioworshipbackend.libs.users.errors.UserNotFound;
+import com.missio.worship.missioworshipbackend.libs.users.UserFullResponse;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,8 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Min;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +32,7 @@ public interface UserController {
                         content = {
                                 @Content(
                                         mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                        schema = @Schema(implementation = User.class))
+                                        schema = @Schema(implementation = UserFullResponse.class))
                         }),
                     @ApiResponse(
                         responseCode = "401",
@@ -109,7 +107,7 @@ public interface UserController {
                             content = {
                                     @Content(
                                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = User.class))
+                                            schema = @Schema(implementation = RestPaginationResponse.class))
                             }),
                     @ApiResponse(
                             responseCode = "401",

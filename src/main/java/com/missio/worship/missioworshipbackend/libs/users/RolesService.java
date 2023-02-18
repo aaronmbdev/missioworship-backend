@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.management.relation.RoleNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
@@ -42,17 +43,18 @@ public class RolesService {
         }
         if(clearance == null) clearance = 0;
         if(rolExists(name)) throw new RoleAlreadyExistsException(name);
-        var role = new Role();
-        role.setName(name);
-        role.setClearance(clearance);
+        var role = new Role(name, clearance);
         return rolesRepository.save(role);
     }
 
     public List<Role> getRolesForUser(final Integer id) {
-        return userRolesRepository.findUserRolesByUserId(id)
-                .stream()
-                .map(UserRoles::getRole)
-                .toList();
+        val roles = userRolesRepository.findUserRolesByUserId(id);
+        if (roles.isEmpty()) {
+            log.error("ERROR! No se han podido obtener los roles para el usuario {}", id);
+        }
+        return roles
+                .map(list -> list.stream().map(UserRoles::getRole).toList())
+                .orElse(List.of());
     }
 
     public List<Role> setRolesForUser(final List<Integer> roles, final User user) {

@@ -28,8 +28,8 @@ public class UserControllerImpl implements UserController {
     @Override
     public Mono<ResponseEntity<Object>> getUser(Integer id, String dirtyToken) {
         try {
+            log.info("Intentando obtener información de usuario {}", id);
             val user = service.getUser(id, dirtyToken);
-            log.info("Obtenido usuario {} correctamente", user);
             return Mono.just(ResponseEntity.ok(user));
         } catch (UserNotFound e) {
             val exception = new NotFoundResponse(e.getMessage());

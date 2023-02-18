@@ -7,6 +7,116 @@
 	},
 	"item": [
 		{
+			"name": "Create Role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request is successful with a status code of 201\", function () {",
+							"  pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"lastRole\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomUserName}}\",\n    \"clearanceLevel\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Endpoint}}/role/",
+					"host": [
+						"{{Endpoint}}"
+					],
+					"path": [
+						"role",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request is successful with a status code of 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"let json = pm.response.json();",
+							"let lastRole = pm.environment.get(\"lastRole\")",
+							"pm.test(\"Verify that response contains expected role\", function() {",
+							"    pm.expect(json.roles[0].id.toString()).eq(lastRole);",
+							"});",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"lastUser\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"roles\": [\n        {{lastRole}}\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{Endpoint}}/user/",
+					"host": [
+						"{{Endpoint}}"
+					],
+					"path": [
+						"user",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create a new song",
 			"event": [
 				{
@@ -127,24 +237,6 @@
 			"response": []
 		},
 		{
-			"name": "Delete last created song",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{Endpoint}}/songs/{{lastSong}}",
-					"host": [
-						"{{Endpoint}}"
-					],
-					"path": [
-						"songs",
-						"{{lastSong}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get all songs",
 			"event": [
 				{
@@ -191,6 +283,24 @@
 			"response": []
 		},
 		{
+			"name": "Delete last created song",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Endpoint}}/songs/{{lastSong}}",
+					"host": [
+						"{{Endpoint}}"
+					],
+					"path": [
+						"songs",
+						"{{lastSong}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get all available rithms",
 			"event": [
 				{
@@ -221,6 +331,90 @@
 					"path": [
 						"songs",
 						"rithms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete last created user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request is successful with a status code of 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Endpoint}}/user/{{lastUser}}",
+					"host": [
+						"{{Endpoint}}"
+					],
+					"path": [
+						"user",
+						"{{lastUser}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete last created role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request is successful with a status code of 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Endpoint}}/role/{{lastRole}}",
+					"host": [
+						"{{Endpoint}}"
+					],
+					"path": [
+						"role",
+						"{{lastRole}}"
 					]
 				}
 			},
