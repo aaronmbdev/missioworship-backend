@@ -50,15 +50,18 @@ public class SongService {
         log.info("Intentando obtener paginación de canciones con los siguientes datos {}", input);
         authorizationChecker.doTokenVerification(bearerToken);
         List<SongSlim> values;
+        long totalCount = 0;
         values = songRepository.findAllByPagination(input.getOrderClause(), input.getLimit(), input.getOffset())
                 .stream()
                 .map(SongSlim::new)
                 .toList();
+        totalCount = songRepository.findAllByPaginationCount(input.getOrderClause(), input.getLimit(), input.getOffset());
         if (input.getWhereActive().equals("active")) {
             values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), true)
                     .stream()
                     .map(SongSlim::new)
                     .toList();
+            totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), input.getLimit(), input.getOffset(), true);
         }
 
         if(input.getWhereActive().equals("unactive")) {
@@ -66,13 +69,15 @@ public class SongService {
                     .stream()
                     .map(SongSlim::new)
                     .toList();
+            totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), input.getLimit(), input.getOffset(), false);
         }
 
         RestPaginationResponse<SongSlim> response = new RestPaginationResponse<>();
         response.setValues(values);
+        response.setTotalCount(totalCount);
         response.setLimit(input.getLimit());
         response.setOffset(input.getOffset());
-        response.setNext_offset(input.getNextOffset());
+        response.setNextOffset(input.getNextOffset());
         return response;
     }
 

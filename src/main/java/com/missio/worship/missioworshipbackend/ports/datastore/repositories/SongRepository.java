@@ -14,6 +14,12 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
     @Query(value="SELECT * FROM songs ORDER BY ?1 DESC LIMIT ?3, ?2 ", nativeQuery = true)
     List<Song> findAllByPagination(String orderClause, int limit, int offset);
 
+    @Query(value="SELECT COUNT(*) as total FROM songs ORDER BY ?1 DESC LIMIT ?3, ?2 ", nativeQuery = true)
+    long findAllByPaginationCount(String orderClause, int limit, int offset);
+
     @Query(value="SELECT * FROM songs WHERE active = ?4 ORDER BY ?1 DESC LIMIT ?3, ?2 ", nativeQuery = true)
     List<Song> findAllByPaginationWithActive(String orderClause, int limit, int offset, boolean active);
+
+    @Query(value="SELECT COUNT(*) as total FROM songs WHERE active = ?4 ORDER BY ?1 DESC LIMIT ?3, ?2 ", nativeQuery = true)
+    long findAllByPaginationWithActiveCount(String orderClause, int limit, int offset, boolean active);
 }

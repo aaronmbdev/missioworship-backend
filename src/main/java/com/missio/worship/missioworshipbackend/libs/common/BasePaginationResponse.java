@@ -15,7 +15,10 @@ public abstract class BasePaginationResponse<T> {
     Integer limit;
 
     @JsonProperty(value = "next_offset", index = 3)
-    Integer next_offset;
+    Integer nextOffset;
+
+    @JsonProperty(value = "total_count", index = 4)
+    Long totalCount;
 
     public abstract List<T> getValues();
 

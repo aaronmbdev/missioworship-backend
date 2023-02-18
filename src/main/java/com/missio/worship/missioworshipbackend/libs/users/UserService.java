@@ -86,12 +86,14 @@ public class UserService {
         val values = userRepository.findAllByPagination(input.getLimit(), input.getOffset())
                 .stream()
                 .map(this::userFullResponseFromUser).toList();
+        val totalValues = userRepository.count();
         log.info("Encontrados {} valores", values.size());
         RestPaginationResponse<UserFullResponse> response = new RestPaginationResponse<>();
         response.setValues(values);
         response.setLimit(input.getLimit());
+        response.setTotalCount(totalValues);
         response.setOffset(input.getOffset());
-        response.setNext_offset(input.getNextOffset());
+        response.setNextOffset(input.getNextOffset());
         return response;
     }
 
