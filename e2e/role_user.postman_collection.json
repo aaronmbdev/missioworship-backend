@@ -59,7 +59,7 @@
 			"response": []
 		},
 		{
-			"name": "Get last created role",
+			"name": "Get all roles",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -118,6 +118,12 @@
 							"pm.test(\"Request is successful with a status code of 200\", function () {",
 							"  pm.response.to.have.status(200);",
 							"});",
+							"let json = pm.response.json();",
+							"let lastRole = pm.environment.get(\"lastRole\")",
+							"pm.test(\"Verify that response contains expected role\", function() {",
+							"    pm.expect(json.roles[0].id.toString()).eq(lastRole);",
+							"});",
+							"",
 							"var jsonData = JSON.parse(responseBody);",
 							"postman.setEnvironmentVariable(\"lastUser\", jsonData.id);"
 						],
@@ -169,6 +175,12 @@
 						"exec": [
 							"pm.test(\"Request is successful with a status code of 200\", function () {",
 							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let json = pm.response.json();",
+							"let lastRole = pm.environment.get(\"lastRole\")",
+							"pm.test(\"Verify that response contains expected role\", function() {",
+							"    pm.expect(json.roles[0].id.toString()).eq(lastRole);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -210,6 +222,12 @@
 						"exec": [
 							"pm.test(\"Request is successful with a status code of 200\", function () {",
 							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verify user fields are updated\", function() {",
+							"    let json = pm.response.json();",
+							"    pm.expect(json.name).to.eq(\"Nuevo nombre\");",
+							"    pm.expect(json.email).to.eq(\"micorreo@gmail.com\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -231,7 +249,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Nuevo nombre\"\n}",
+					"raw": "{\n    \"name\": \"Nuevo nombre\",\n    \"email\": \"micorreo@gmail.com\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -252,7 +270,7 @@
 			"response": []
 		},
 		{
-			"name": "Verify that usar was updated",
+			"name": "Get all registered users",
 			"event": [
 				{
 					"listen": "test",
@@ -262,9 +280,9 @@
 							"  pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Verify user fields are updated\", function() {",
+							"pm.test(\"Verify that response contains at least one element\", function() {",
 							"    let json = pm.response.json();",
-							"    pm.expect(json.name).to.eq(\"Nuevo nombre\");",
+							"    pm.expect(json.values.length).to.above(0);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -285,20 +303,30 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{Endpoint}}/user/{{lastUser}}",
+					"raw": "{{Endpoint}}/user/?limit=5&offset=0",
 					"host": [
 						"{{Endpoint}}"
 					],
 					"path": [
 						"user",
-						"{{lastUser}}"
+						""
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get all registered users",
+			"name": "Delete last created user",
 			"event": [
 				{
 					"listen": "test",
@@ -324,16 +352,58 @@
 						}
 					]
 				},
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{Endpoint}}/user/",
+					"raw": "{{Endpoint}}/user/{{lastUser}}",
 					"host": [
 						"{{Endpoint}}"
 					],
 					"path": [
 						"user",
-						""
+						"{{lastUser}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete last created role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Request is successful with a status code of 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{Endpoint}}/role/{{lastRole}}",
+					"host": [
+						"{{Endpoint}}"
+					],
+					"path": [
+						"role",
+						"{{lastRole}}"
 					]
 				}
 			},

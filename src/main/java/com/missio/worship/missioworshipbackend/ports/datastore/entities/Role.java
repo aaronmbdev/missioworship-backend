@@ -3,8 +3,6 @@ package com.missio.worship.missioworshipbackend.ports.datastore.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
-
 @ToString
 @Getter
 @Setter
@@ -13,6 +11,10 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 public class Role {
+    public Role(@NonNull final String name, int clearance) {
+        this.name = name;
+        this.clearance = clearance;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_sequence")
     @SequenceGenerator(name = "role_sequence", sequenceName = "role_sequence", allocationSize = 1)

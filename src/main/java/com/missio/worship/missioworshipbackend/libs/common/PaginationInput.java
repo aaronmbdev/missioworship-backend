@@ -21,4 +21,8 @@ public class PaginationInput {
         this.offset = offset;
         this.nextOffset = limit + offset;
     }
+
+    public String toString() {
+        return "[PaginationInput limit='" + this.getLimit() +"', offset='" + this.getOffset() + "']";
+    }
 }

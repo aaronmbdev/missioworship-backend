@@ -24,7 +24,7 @@ public class UserFullResponse {
 
     String email;
 
-    List<String> roles;
+    List<Role> roles;
 
     @Override
     public boolean equals(Object o) {

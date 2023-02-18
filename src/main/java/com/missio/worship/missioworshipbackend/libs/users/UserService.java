@@ -12,6 +12,7 @@ import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.UserRoles;
 import com.missio.worship.missioworshipbackend.ports.datastore.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -32,18 +33,7 @@ public class UserService {
     public UserFullResponse getUser(final Integer id, final String token) throws UserNotFound, InvalidProvidedToken {
         authorizationChecker.doTokenVerification(token);
         val dbresponse = getUser(id);
-        val roleList = rolesService.getRolesForUser(id)
-                .stream()
-                .map(Role::getName)
-                .toList();
-        log.info("Encontrado usuario {} con roles {}", dbresponse, roleList);
-
-        return UserFullResponse.builder()
-                .id(dbresponse.getId())
-                .name(dbresponse.getName())
-                .email(dbresponse.getEmail())
-                .roles(roleList)
-                .build();
+        return userFullResponseFromUser(dbresponse);
     }
 
     public UserFullResponse createUser(final String name, final String email, final List<Integer> roles, final String token) throws RolNotFoundException, InvalidProvidedToken, NotAdminException, InvalidRolException, EmailAlreadyRegisteredException {
@@ -62,13 +52,7 @@ public class UserService {
         log.info("Se van a crear las siguientes relaciones rol-usuario: '{}'", userRoles);
         rolesService.putUserRoles(userRoles);
 
-        return UserFullResponse.builder()
-                .id(saved.getId())
-                .name(saved.getName())
-                .email(saved.getEmail())
-                .roles(userRoles.stream()
-                        .map(entry -> entry.getRole().getName()).toList())
-                .build();
+        return userFullResponseFromUser(saved);
     }
 
     public void deleteUser(final Integer id, final String token) throws InvalidProvidedToken, NotAdminException, UserNotFound, CannotDeleteUserException, EmptyResultDataAccessException {
@@ -88,26 +72,22 @@ public class UserService {
         }
         if(userCreate.name() != null) user.setName(userCreate.name());
         if(userCreate.email() != null) user.setEmail(userCreate.email());
-        var roles = rolesService.getRolesForUser(id);
         if(userCreate.roles() != null) {
-            roles = rolesService.setRolesForUser(userCreate.roles(), user);
+            rolesService.setRolesForUser(userCreate.roles(), user);
         }
         val response = userRepository.save(user);
-        return UserFullResponse.builder()
-                .id(response.getId())
-                .name(response.getName())
-                .email(response.getEmail())
-                .roles(roles.stream()
-                        .map(Role::getName)
-                        .toList())
-                .build();
+        return userFullResponseFromUser(response);
     }
 
-    public RestPaginationResponse<User> getUserList(final PaginationInput input, String bearerToken)
-            throws InvalidProvidedToken, LessThanZeroException, WrongOffsetValueException {
+    public RestPaginationResponse<UserFullResponse> getUserList(final PaginationInput input, String bearerToken)
+            throws InvalidProvidedToken {
+        log.info("Intentando obtener paginación de usuarios con los datos: {}", input);
         authorizationChecker.doTokenVerification(bearerToken);
-        val values = userRepository.findAllByPagination(input.getLimit(), input.getOffset());
-        RestPaginationResponse<User> response = new RestPaginationResponse<>();
+        val values = userRepository.findAllByPagination(input.getLimit(), input.getOffset())
+                .stream()
+                .map(this::userFullResponseFromUser).toList();
+        log.info("Encontrados {} valores", values.size());
+        RestPaginationResponse<UserFullResponse> response = new RestPaginationResponse<>();
         response.setValues(values);
         response.setLimit(input.getLimit());
         response.setOffset(input.getOffset());
@@ -131,6 +111,17 @@ public class UserService {
         val dbresponse = userRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
         log.info("Encontrado usuario {}", dbresponse);
         return dbresponse;
+    }
+
+    private UserFullResponse userFullResponseFromUser(final User user) {
+        var roles = rolesService.getRolesForUser(user.getId());
+        log.info("Found roles for user {}: '{}'", user.getId(), roles);
+        return UserFullResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .roles(roles)
+                .build();
     }
 
     private boolean emailExists(final String email) {

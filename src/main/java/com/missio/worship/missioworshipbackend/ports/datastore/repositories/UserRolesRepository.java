@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRolesRepository extends JpaRepository<UserRoles, Integer> {
-    @Query(
-            value = "SELECT * FROM user_roles u WHERE u.user_id = ?1",
-            nativeQuery = true)
-    List<UserRoles> findUserRolesByUserId(Integer id);
+
+    @Transactional
+    Optional<List<UserRoles>> findUserRolesByUserId(Integer id);
 
     @Modifying
     @Transactional
