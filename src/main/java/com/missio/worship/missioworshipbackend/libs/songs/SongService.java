@@ -98,11 +98,12 @@ public class SongService {
 
     public Song updateSong(final Integer id, final SongInput song, final String bearerToken)
             throws InvalidProvidedToken, NotAdminException, SongDoesNotExistsException, CouldNotUpdateSongException {
+        log.info("Intentado actualizar canción {} con datos: {}", id, song);
         val decoded = authorizationChecker.doTokenVerification(bearerToken);
         if (!authorizationChecker.verifyTokenAndAdmin(decoded)) {
             throw new NotAdminException();
         }
-        val errors = validateSongInput(song, decoded);
+        val errors = validateSongInputCommon(song, decoded);
         if (!errors.isEmpty()) {
             throw new CouldNotUpdateSongException(errors);
         }
@@ -110,10 +111,10 @@ public class SongService {
         if (!toBeUpdated.getName().equals(song.name())) toBeUpdated.setName(song.name());
         if (!toBeUpdated.getArtist().equals(song.artist())) toBeUpdated.setArtist(song.artist());
         if (!toBeUpdated.getRithm().equals(song.rithm())) toBeUpdated.setRithm(song.rithm());
-        if (!toBeUpdated.getLinkToTrack().equals(song.linkToTrack())) {
+        if (song.linkToTrack() != null && !toBeUpdated.getLinkToTrack().equals(song.linkToTrack())) {
             toBeUpdated.setLinkToTrack(song.linkToTrack());
         }
-        if (!toBeUpdated.getLinkToYoutube().equals(song.linkToYoutube())) {
+        if (song.linkToYoutube() != null && !toBeUpdated.getLinkToYoutube().equals(song.linkToYoutube())) {
             toBeUpdated.setLinkToYoutube(song.linkToYoutube());
         }
         if (toBeUpdated.getLastSunday() == null || !toBeUpdated.getLastSunday().equals(song.lastSunday())) {
@@ -129,7 +130,7 @@ public class SongService {
     public Song createSong(SongInput song, String bearerToken)
             throws InvalidProvidedToken, CouldNotCreateSongException, NotAdminException {
         val decoded = authorizationChecker.doTokenVerification(bearerToken);
-        val errors = validateSongInput(song, decoded);
+        val errors = validateSongInputCreation(song, decoded);
         if (!errors.isEmpty()) {
             throw new CouldNotCreateSongException(errors);
         }
@@ -143,7 +144,7 @@ public class SongService {
         return input.active() || input.lastSunday() != null || input.notes() != null;
     }
 
-    private List<String> validateSongInput(final SongInput input, final MissioValidationResponse decoded) {
+    private List<String> validateSongInputCreation(final SongInput input, final MissioValidationResponse decoded) {
         List<String> returnErrors = new LinkedList<>();
         if(!validLinks(input.linkToTrack())) {
             returnErrors.add("El link al track no es un enlace válido");
@@ -151,6 +152,13 @@ public class SongService {
         if(!validLinks(input.linkToYoutube())) {
             returnErrors.add("El link al video no es un enlace válido");
         }
+        var common = validateSongInputCommon(input, decoded);
+        returnErrors.addAll(common);
+        return returnErrors;
+    }
+
+    private List<String> validateSongInputCommon(final SongInput input, final MissioValidationResponse decoded) {
+        List<String> returnErrors = new LinkedList<>();
         if(songRepository.existsByLinkToTrack(input.linkToTrack())) {
             returnErrors.add("Ya existe una canción con el track: " + input.linkToTrack());
         }
