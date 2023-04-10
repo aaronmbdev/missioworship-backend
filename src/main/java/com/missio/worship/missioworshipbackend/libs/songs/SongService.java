@@ -110,7 +110,7 @@ public class SongService {
         Song toBeUpdated = songRepository.findById(id).orElseThrow(() -> new SongDoesNotExistsException(id));
         if (!toBeUpdated.getName().equals(song.name())) toBeUpdated.setName(song.name());
         if (!toBeUpdated.getArtist().equals(song.artist())) toBeUpdated.setArtist(song.artist());
-        if (!toBeUpdated.getRithm().equals(song.rithm())) toBeUpdated.setRithm(song.rithm());
+        if (song.rithm() != null && !toBeUpdated.getRithm().equals(song.rithm())) toBeUpdated.setRithm(song.rithm());
         if (song.linkToTrack() != null && !toBeUpdated.getLinkToTrack().equals(song.linkToTrack())) {
             toBeUpdated.setLinkToTrack(song.linkToTrack());
         }
