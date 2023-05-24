@@ -51,25 +51,28 @@ public class SongService {
         authorizationChecker.doTokenVerification(bearerToken);
         List<SongSlim> values;
         long totalCount = 0;
-        values = songRepository.findAllByPagination(input.getOrderClause(), input.getLimit(), input.getOffset())
-                .stream()
-                .map(SongSlim::new)
-                .toList();
-        totalCount = songRepository.findAllByPaginationCount(input.getOrderClause(), input.getLimit(), input.getOffset());
-        if (input.getWhereActive().equals("active")) {
-            values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), true)
-                    .stream()
-                    .map(SongSlim::new)
-                    .toList();
-            totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), input.getLimit(), input.getOffset(), true);
-        }
-
-        if(input.getWhereActive().equals("unactive")) {
-            values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), false)
-                    .stream()
-                    .map(SongSlim::new)
-                    .toList();
-            totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), input.getLimit(), input.getOffset(), false);
+        switch (input.getWhereActive()) {
+            case "active" -> {
+                values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), true)
+                        .stream()
+                        .map(SongSlim::new)
+                        .toList();
+                totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), true);
+            }
+            case "unactive" -> {
+                values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), false)
+                        .stream()
+                        .map(SongSlim::new)
+                        .toList();
+                totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), false);
+            }
+            default -> {
+                values = songRepository.findAllByPagination(input.getOrderClause(), input.getLimit(), input.getOffset())
+                        .stream()
+                        .map(SongSlim::new)
+                        .toList();
+                totalCount = songRepository.findAllByPaginationCount(input.getOrderClause());
+            }
         }
 
         RestPaginationResponse<SongSlim> response = new RestPaginationResponse<>();
