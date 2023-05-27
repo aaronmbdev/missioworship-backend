@@ -19,4 +19,6 @@ public interface AbsencesRepository extends JpaRepository<Absence, Integer> {
 
     @Query(value="SELECT * FROM absence a WHERE user_id = ?1 AND absence_date BETWEEN ?2 AND ?3", nativeQuery = true)
     List<Absence> findAllByUserAndAbsenceDate(Integer user, Date begin, Date end);
+
+    List<Absence> findAllByAbsenceDate(Date date);
 }

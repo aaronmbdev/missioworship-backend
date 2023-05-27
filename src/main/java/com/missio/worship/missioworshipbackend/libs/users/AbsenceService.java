@@ -74,6 +74,14 @@ public class AbsenceService {
         repository.deleteByUserAndAbsenceDate(user, date);
     }
 
+    public List<User> getUserAbsentInGivenDate(final Date date, final String token) throws InvalidProvidedToken {
+        authorizationChecker.doTokenVerification(token);
+        val absents = repository.findAllByAbsenceDate(date);
+        return absents.stream()
+                .map(Absence::getUser)
+                .toList();
+    }
+
     private boolean absenceExists(final User userId, final Date date) {
         return repository.existsByUserAndAbsenceDate(userId, date);
     }

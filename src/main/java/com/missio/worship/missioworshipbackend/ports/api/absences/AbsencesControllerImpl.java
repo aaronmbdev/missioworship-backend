@@ -80,5 +80,21 @@ public class AbsencesControllerImpl implements AbsencesController{
         }
     }
 
+    @Override
+    public Mono<ResponseEntity<Object>> getUsersAbsentInDate(String date, String bearerToken) {
+        try {
+            val formattedDate = DateUtils.parseFrom(date);
+            val response = service.getUserAbsentInGivenDate(formattedDate, bearerToken);
+            return Mono.just(ResponseEntity.ok(response));
+        } catch (InvalidProvidedToken e) {
+            val exception = new UnauthorizedResponse(e.getMessage());
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.UNAUTHORIZED));
+        } catch (ParseException e) {
+            val exception = new BadRequestResponse("Error! Las fechas introducidas no tienen un formato " +
+                    "aceptable. Deben cumplir con el formato yyyy-MM-dd");
+            return Mono.just(new ResponseEntity<>(exception, HttpStatus.BAD_REQUEST));
+        }
+    }
+
 
 }

@@ -134,4 +134,24 @@ public interface AbsencesController {
                     )
             })
     Mono<ResponseEntity<Object>> willNotBeAbsent(@RequestBody AbsenceBodyInput input, @RequestHeader(value = "Authorization", required = false) String bearerToken);
+
+
+    @GetMapping("all")
+    @Operation(summary = "Devuelve los usuarios que asistirán en una fecha determinada.")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Información obtenida correctamente"),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "No se ha enviado el token de sesión o ha caducado",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = UnauthorizedResponse.class))
+                            }),
+            })
+    Mono<ResponseEntity<Object>> getUsersAbsentInDate(@RequestParam String date,
+                                                      @RequestHeader(value = "Authorization", required = false) String bearerToken);
 }
