@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface SongRepository extends JpaRepository<Song, Integer> {
-    boolean existsByLinkToTrack(final String link);
     boolean existsByLinkToYoutube(final String link);
 
     @Query(value="SELECT * FROM songs ORDER BY ?1 DESC LIMIT ?3, ?2 ", nativeQuery = true)

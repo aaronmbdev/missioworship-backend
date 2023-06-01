@@ -114,9 +114,6 @@ public class SongService {
         if (!toBeUpdated.getName().equals(song.name())) toBeUpdated.setName(song.name());
         if (!toBeUpdated.getArtist().equals(song.artist())) toBeUpdated.setArtist(song.artist());
         if (song.rithm() != null && !toBeUpdated.getRithm().equals(song.rithm())) toBeUpdated.setRithm(song.rithm());
-        if (song.linkToTrack() != null && !toBeUpdated.getLinkToTrack().equals(song.linkToTrack())) {
-            toBeUpdated.setLinkToTrack(song.linkToTrack());
-        }
         if (song.linkToYoutube() != null && !toBeUpdated.getLinkToYoutube().equals(song.linkToYoutube())) {
             toBeUpdated.setLinkToYoutube(song.linkToYoutube());
         }
@@ -149,9 +146,6 @@ public class SongService {
 
     private List<String> validateSongInputCreation(final SongInput input, final MissioValidationResponse decoded) {
         List<String> returnErrors = new LinkedList<>();
-        if(!validLinks(input.linkToTrack())) {
-            returnErrors.add("El link al track no es un enlace válido");
-        }
         if(!validLinks(input.linkToYoutube())) {
             returnErrors.add("El link al video no es un enlace válido");
         }
@@ -164,12 +158,6 @@ public class SongService {
         List<String> returnErrors = new LinkedList<>();
         if(input.linkToYoutube() != null && input.linkToYoutube().length() > 255) {
             returnErrors.add("El link a Youtube debe tener una longitud máxima de 255 caracteres.");
-        }
-        if(input.linkToTrack() != null && input.linkToTrack().length() > 255) {
-            returnErrors.add("El link al Track debe tener una longitud máxima de 255 caracteres");
-        }
-        if(songRepository.existsByLinkToTrack(input.linkToTrack())) {
-            returnErrors.add("Ya existe una canción con el track: " + input.linkToTrack());
         }
         if(songRepository.existsByLinkToYoutube(input.linkToYoutube())) {
             returnErrors.add("Ya existe una canción con el link: " + input.linkToYoutube());

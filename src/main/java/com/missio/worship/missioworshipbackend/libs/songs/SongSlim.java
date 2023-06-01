@@ -15,8 +15,6 @@ public class SongSlim {
 
     private SongRithm rithm;
 
-    private String linkToTrack;
-
     private String linkToYoutube;
 
     private boolean active;
@@ -28,7 +26,6 @@ public class SongSlim {
         this.artist = fromSong.getArtist();
         this.name = fromSong.getName();
         this.rithm = fromSong.getRithm();
-        this.linkToTrack = fromSong.getLinkToTrack();
         this.linkToYoutube = fromSong.getLinkToYoutube();
         this.active = fromSong.isActive();
         this.notes = fromSong.getNotes();

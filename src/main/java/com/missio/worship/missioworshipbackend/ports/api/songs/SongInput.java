@@ -7,7 +7,6 @@ import java.util.Date;
 public record SongInput(String name,
                         String artist,
                         SongRithm rithm,
-                        String linkToTrack,
                         String linkToYoutube,
                         Date lastSunday,
                         String notes,

@@ -11,7 +11,6 @@ import java.util.Date;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "songs")
 public class Song {
@@ -23,7 +22,6 @@ public class Song {
         rithm = input.rithm();
         name = input.name();
         artist = input.artist();
-        linkToTrack = input.linkToTrack();
         linkToYoutube = input.linkToYoutube();
         this.creationDate = new Date();
     }
@@ -46,9 +44,6 @@ public class Song {
     @NonNull
     private SongRithm rithm;
 
-    @Column(name = "trackLink")
-    private String linkToTrack;
-
     @Column(nullable = false, name = "youtubeLink")
     @NonNull
     private String linkToYoutube;
@@ -65,4 +60,6 @@ public class Song {
     @Column(nullable = false, name = "active")
     @NonNull
     private boolean active;
+
+    public Song() {}
 }
