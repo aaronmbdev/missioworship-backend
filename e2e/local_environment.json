@@ -10,7 +10,7 @@
 		},
 		{
 			"key": "Token",
-			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwcm9maWxlUGljVXJsIjoiaHR0cDovL3Rlc3QuY29tIiwiY2xlYXJhbmNlTGV2ZWwiOjIsInJvbGVzIjpbIk9uZSIsIlR3byJdLCJuYW1lIjoiYWFyb24iLCJpc3MiOiJNaXNzaW9TYW50Q3VnYXQiLCJpZCI6MSwiZXhwIjoxNjc2ODAxOTg1LCJpYXQiOjE2NzY3MTU1ODUsImVtYWlsIjoidGVzdEBlbWFpbC5jb20ifQ.iTsFt72UQWi0Yh6IiUt4jugQXqG0DDNMcwACg_3StwQ",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwcm9maWxlUGljVXJsIjoiaHR0cDovL3Rlc3QuY29tIiwiY2xlYXJhbmNlTGV2ZWwiOjIsInJvbGVzIjpbIk9uZSIsIlR3byJdLCJuYW1lIjoiYWFyb24iLCJpc3MiOiJNaXNzaW9TYW50Q3VnYXQiLCJpZCI6MSwiZXhwIjoxNjg1NzI3NzUwLCJpYXQiOjE2ODU2NDEzNTAsImVtYWlsIjoidGVzdEBlbWFpbC5jb20ifQ.zUA1LA5yZh3LFGHNIvtUyTE8053pFYGxynCpMLNrz40",
 			"type": "default",
 			"enabled": true
 		},
