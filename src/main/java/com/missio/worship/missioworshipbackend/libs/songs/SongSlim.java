@@ -21,6 +21,8 @@ public class SongSlim {
 
     private boolean active;
 
+    private String notes;
+
     public SongSlim(Song fromSong) {
         this.id = fromSong.getId();
         this.artist = fromSong.getArtist();
@@ -29,5 +31,6 @@ public class SongSlim {
         this.linkToTrack = fromSong.getLinkToTrack();
         this.linkToYoutube = fromSong.getLinkToYoutube();
         this.active = fromSong.isActive();
+        this.notes = fromSong.getNotes();
     }
 }

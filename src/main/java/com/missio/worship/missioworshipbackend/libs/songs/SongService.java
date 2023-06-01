@@ -162,10 +162,10 @@ public class SongService {
 
     private List<String> validateSongInputCommon(final SongInput input, final MissioValidationResponse decoded) {
         List<String> returnErrors = new LinkedList<>();
-        if(input.linkToYoutube().length() > 255) {
+        if(input.linkToYoutube() != null && input.linkToYoutube().length() > 255) {
             returnErrors.add("El link a Youtube debe tener una longitud máxima de 255 caracteres.");
         }
-        if(input.linkToTrack().length() > 255) {
+        if(input.linkToTrack() != null && input.linkToTrack().length() > 255) {
             returnErrors.add("El link al Track debe tener una longitud máxima de 255 caracteres");
         }
         if(songRepository.existsByLinkToTrack(input.linkToTrack())) {
