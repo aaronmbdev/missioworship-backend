@@ -9,10 +9,6 @@ jobs:
   build:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -43,6 +39,7 @@ jobs:
           git config --global user.name "Cloud Automation"
           git add pom.xml
           git commit -m 'chore: [auto] Update ${{ env.cversion }} image version to ${{ steps.bump_version.outputs.next-version }}'
+          git diff
           git push     
 
       - name: Create release with latest version
