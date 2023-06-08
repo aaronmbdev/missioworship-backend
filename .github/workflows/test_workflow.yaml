@@ -18,8 +18,8 @@ jobs:
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag: test
+          name: Releasetes
           body: |
             Release created automatically by GitHub Actions.
           skipIfReleaseExists: true
