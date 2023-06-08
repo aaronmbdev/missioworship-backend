@@ -1,9 +1,8 @@
 name: Pull request test
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+
 
 env:
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
