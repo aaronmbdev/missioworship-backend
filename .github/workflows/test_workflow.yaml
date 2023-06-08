@@ -2,6 +2,9 @@ name: Create a release
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
