@@ -76,9 +76,14 @@ public class RolesService {
         rolesRepository.deleteById(id);
     }
 
-    public List<Role> getAllRoles(final String token) throws InvalidProvidedToken, NotAdminException {
+    public List<Role> getAllRoles(final String token, final String search)
+            throws InvalidProvidedToken, NotAdminException {
         checkAdminAuthOrDie(token);
-        return rolesRepository.findAll();
+        var searchFilter = "%";
+        if(!search.isBlank()) {
+            searchFilter = "%" + search + "%";
+        }
+        return rolesRepository.findAllByFilter(searchFilter);
     }
 
     public List<Role> validateListOfRoles(List<Integer> rolesIds) {

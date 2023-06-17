@@ -28,9 +28,9 @@ public class RoleControllerImpl implements RoleController {
     private final RolesService service;
 
     @Override
-    public Mono<ResponseEntity<Object>> listRoles(String bearerToken) {
+    public Mono<ResponseEntity<Object>> listRoles(String bearerToken, String search) {
         try {
-            val roles = service.getAllRoles(bearerToken);
+            val roles = service.getAllRoles(bearerToken, search);
             return Mono.just(ResponseEntity.ok(roles));
         } catch (InvalidProvidedToken e) {
             val exception = new UnauthorizedResponse(e.getMessage());

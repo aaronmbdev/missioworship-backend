@@ -7,6 +7,7 @@ import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.Role;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,7 +59,10 @@ public interface RoleController {
                                             schema = @Schema(implementation = UnauthorizedResponse.class))
                             })
             })
-    Mono<ResponseEntity<Object>> listRoles(@RequestHeader(value = "Authorization", required = false) String bearerToken) throws InvalidProvidedToken;
+    Mono<ResponseEntity<Object>> listRoles(
+            @RequestHeader(value = "Authorization", required = false) String bearerToken,
+            @Parameter(description = "Filtro de búsqueda") String search
+    ) throws InvalidProvidedToken;
 
     @PostMapping
     @Operation(summary = "Crear nuevo rol")
