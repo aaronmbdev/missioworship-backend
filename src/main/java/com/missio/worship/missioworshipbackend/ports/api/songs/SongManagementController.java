@@ -67,10 +67,9 @@ public interface SongManagementController {
             @Parameter(description = "Cantidad de elementos por página. Minimo 0") Integer limit,
             @Parameter(description = "Cantidad de elementos a omitir. Se calcula como offset_anterior " +
                     "+ limit. Debe ser múltiplo de limit") Integer offset,
-            @Parameter(description = "Filtro de fecha. Permite ver las últimas tocadas o las últimas creadas." +
-                    " El valor puede ser created o played. Por defecto es created") String dateFilter,
             @Parameter(description = "Filtro de canciones activas, permite ver todas, solo activas o solo propuestas. " +
                     "El valor puede ser all, active, unactive. Por defecto es all") String activeFilter,
+            @Parameter(description = "Término de búsqueda que hace match con canción")  String search,
             @RequestHeader(value = "Authorization", required = false) String bearerToken);
 
     @GetMapping("{id}")
