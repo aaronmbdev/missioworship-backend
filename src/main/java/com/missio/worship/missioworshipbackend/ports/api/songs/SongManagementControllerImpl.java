@@ -45,14 +45,14 @@ public class SongManagementControllerImpl implements SongManagementController {
     @Override
     public Mono<ResponseEntity<Object>> getAllSongs(Integer limit,
                                                     Integer offset,
-                                                    String dateFilter,
                                                     String activeFilter,
+                                                    String search,
                                                     String bearerToken) {
         try {
-            val input = new SongPaginationInput(limit, offset, dateFilter, activeFilter);
+            val input = new SongPaginationInput(limit, offset, activeFilter, search);
             val response = service.getAllSongsPaginated(input, bearerToken);
             return Mono.just(ResponseEntity.ok(response));
-        } catch (LessThanZeroException | WrongOffsetValueException | InvalidDateFilterException | InvalidActiveFilterException e) {
+        } catch (LessThanZeroException | WrongOffsetValueException | InvalidActiveFilterException e) {
             return Mono.just(new BadRequestResponse(e.getMessage()).toObjectEntity());
         } catch (InvalidProvidedToken e) {
             return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());

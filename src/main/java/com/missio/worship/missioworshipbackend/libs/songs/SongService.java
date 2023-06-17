@@ -20,6 +20,7 @@ import com.missio.worship.missioworshipbackend.ports.datastore.repositories.Song
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springdoc.core.converters.models.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -47,35 +48,37 @@ public class SongService {
 
     public RestPaginationResponse<SongSlim> getAllSongsPaginated(final SongPaginationInput input, final String bearerToken)
             throws InvalidProvidedToken {
-        log.info("Intentando obtener paginación de canciones con los siguientes datos {}", input);
         authorizationChecker.doTokenVerification(bearerToken);
-        List<SongSlim> values;
-        long totalCount = 0;
-        switch (input.getWhereActive()) {
-            case "active" -> {
-                values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), true)
-                        .stream()
-                        .map(SongSlim::new)
-                        .toList();
-                totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), true);
-            }
-            case "unactive" -> {
-                values = songRepository.findAllByPaginationWithActive(input.getOrderClause(), input.getLimit(), input.getOffset(), false)
-                        .stream()
-                        .map(SongSlim::new)
-                        .toList();
-                totalCount = songRepository.findAllByPaginationWithActiveCount(input.getOrderClause(), false);
-            }
-            default -> {
-                values = songRepository.findAllByPagination(input.getOrderClause(), input.getLimit(), input.getOffset())
-                        .stream()
-                        .map(SongSlim::new)
-                        .toList();
-                totalCount = songRepository.findAllByPaginationCount(input.getOrderClause());
-            }
+        if(input.getActiveFilter().equals("all")) {
+            return produceDefaultResponse(input);
+        } else {
+            var active = input.getActiveFilter().equals("active");
+            return produceResponseWithActive(active, input);
         }
+    }
 
-        RestPaginationResponse<SongSlim> response = new RestPaginationResponse<>();
+    private RestPaginationResponse<SongSlim> produceResponseWithActive(final boolean active, final SongPaginationInput input) {
+        List<SongSlim> values = songRepository.findAllByPaginationWithActive
+                        (input.getLimit(), input.getOffset(), active, input.getSearchQuery())
+                .stream()
+                .map(SongSlim::new)
+                .toList();
+        long totalCount = songRepository.countAllByActiveEq(active, input.getSearchQuery());
+        return producePaginationResponse(values, totalCount, input);
+
+    }
+
+    private RestPaginationResponse<SongSlim> produceDefaultResponse(final SongPaginationInput input) {
+        List<SongSlim> values = songRepository.findAllByPagination(input.getLimit(), input.getOffset(), input.getSearchQuery())
+                .stream()
+                .map(SongSlim::new)
+                .toList();
+        long totalCount = songRepository.countAllByName(input.getSearchQuery());
+        return producePaginationResponse(values, totalCount, input);
+    }
+
+    private RestPaginationResponse<SongSlim> producePaginationResponse(List<SongSlim> values, long totalCount, final SongPaginationInput input) {
+        var response = new RestPaginationResponse<SongSlim>();
         response.setValues(values);
         response.setTotalCount(totalCount);
         response.setLimit(input.getLimit());
