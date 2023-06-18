@@ -80,7 +80,7 @@ public class RolesService {
             throws InvalidProvidedToken, NotAdminException {
         checkAdminAuthOrDie(token);
         var searchFilter = "%";
-        if(!search.isBlank()) {
+        if(search != null && !search.isBlank()) {
             searchFilter = "%" + search + "%";
         }
         return rolesRepository.findAllByFilter(searchFilter);

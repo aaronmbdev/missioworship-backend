@@ -21,7 +21,7 @@ public class SongPaginationInput extends PaginationInput {
             throw new InvalidActiveFilterException(activeFilter);
         }
         this.activeFilter = activeFilter;
-        if (!searchQuery.isBlank()) {
+        if (searchQuery != null && !searchQuery.isBlank()) {
             this.searchQuery = "%" + searchQuery + "%";
         } else {
             this.searchQuery = "%";
