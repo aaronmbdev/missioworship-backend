@@ -41,6 +41,7 @@ class SundaySongServiceTest {
     @BeforeEach
     void setAuthorizationChecker() throws InvalidProvidedToken {
         when(authorizationChecker.doTokenVerification(any())).thenReturn(MissioValidationResponseSampler.sample());
+        when(authorizationChecker.verifyTokenAndAdmin(any())).thenReturn(true);
     }
 
     @Test
