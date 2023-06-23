@@ -2,6 +2,7 @@ package com.missio.worship.missioworshipbackend.libs.songs;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.MissioValidationResponseSampler;
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.songs.errors.NoSongsForSundayException;
 import com.missio.worship.missioworshipbackend.ports.api.common.AuthorizationChecker;
 import com.missio.worship.missioworshipbackend.ports.datastore.entities.SundaySongsSampler;
@@ -43,7 +44,7 @@ class SundaySongServiceTest {
     }
 
     @Test
-    void getSundaySongsForExistingSunday() throws NoSongsForSundayException, InvalidProvidedToken {
+    void getSundaySongsForExistingSunday() throws NoSongsForSundayException, InvalidProvidedToken, NotAdminException {
         var expected = SundaySongsSampler.sample();
         var date = new Date();
         when(songsRepository.findBySunday(any())).thenReturn(Optional.of(expected));
