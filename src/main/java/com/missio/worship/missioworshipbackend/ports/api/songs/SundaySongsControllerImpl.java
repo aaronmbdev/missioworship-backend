@@ -1,7 +1,9 @@
 package com.missio.worship.missioworshipbackend.ports.api.songs;
 
 import com.missio.worship.missioworshipbackend.libs.authentication.errors.InvalidProvidedToken;
+import com.missio.worship.missioworshipbackend.libs.authentication.errors.NotAdminException;
 import com.missio.worship.missioworshipbackend.libs.errors.BadRequestResponse;
+import com.missio.worship.missioworshipbackend.libs.errors.ForbiddenResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.NotFoundResponse;
 import com.missio.worship.missioworshipbackend.libs.errors.UnauthorizedResponse;
 import com.missio.worship.missioworshipbackend.libs.songs.SundaySongService;
@@ -14,9 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
-
 import java.text.ParseException;
-import java.util.Date;
+
 
 @RequestMapping("v1/sunday_songs/")
 @RestController
@@ -38,6 +39,8 @@ public class SundaySongsControllerImpl implements SundaySongsController {
             return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
         } catch (ParseException e) {
             return Mono.just(new BadRequestResponse(e.getMessage()).toObjectEntity());
+        } catch (NotAdminException e) {
+            return Mono.just(new ForbiddenResponse(e.getMessage()).toObjectEntity());
         }
     }
 
@@ -46,12 +49,26 @@ public class SundaySongsControllerImpl implements SundaySongsController {
         try {
             service.putSongsForDate(songsInput, bearerToken);
             return Mono.just(ResponseEntity.ok().build());
-        } catch (SongDoesNotExistsException e) {
+        } catch (SongDoesNotExistsException | ParseException e) {
             return Mono.just(new BadRequestResponse(e.getMessage()).toObjectEntity());
+        } catch (InvalidProvidedToken e) {
+            return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
+        } catch (NotAdminException e) {
+            return Mono.just(new ForbiddenResponse(e.getMessage()).toObjectEntity());
+        }
+    }
+
+    @Override
+    public Mono<ResponseEntity<Object>> deleteAllSongsForDate(String date, String bearerToken) {
+        try {
+            service.deleteAllSongsForDate(date, bearerToken);
+            return Mono.just(ResponseEntity.ok().build());
         } catch (InvalidProvidedToken e) {
             return Mono.just(new UnauthorizedResponse(e.getMessage()).toObjectEntity());
         } catch (ParseException e) {
             return Mono.just(new BadRequestResponse(e.getMessage()).toObjectEntity());
+        } catch (NotAdminException e) {
+            return Mono.just(new ForbiddenResponse(e.getMessage()).toObjectEntity());
         }
     }
 }
